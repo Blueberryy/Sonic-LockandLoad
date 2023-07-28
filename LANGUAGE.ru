@@ -78,7 +78,7 @@ C2TEXT =
 	"\n"
 	"Шэдоу сбегает.\n"
 	"\n"
-	"Соник выглядит удивлённым. «Эй! Шедоу! Стой!»\n"
+	"Соник выглядит удивлённым. «Эй! Шэдоу! Стой!»\n"
 	"Он подхватывает Эми и бежит за Шэдоу.";
 C3TEXT =
 	"Эми оглядывается по сторонам. «Куда ты нас привёл?»\n"
@@ -157,18 +157,17 @@ MNU_DELETESG = "Удалить сохранение ";
 WI_FINISHED			= "ЭТАП ЗАВЕРШЁН";
 WI_ENTERING			= "СЛЕДУЮЩИЙ ЭТАП";
 
-DOSY = "\c[MenuInactive] Спасибо, что поиграли в Sonic: Lock & Load!\nВы уверены, что хотите выйти из игры?";
+DOSY = "\c[LiBlue] Спасибо, что поиграли в Sonic: Lock & Load!\nВы уверены, что хотите выйти из игры?";
 
 STARTUP1 = "\c[Sonic]Добро пожаловать в Sonic: Lock & Load!";
 
-skill_text1 = "\c[Green]Противников практически нет.\n\nРекомендуется для полных новичков.";
-skill_text2 = "\c[Yellow]Сокращённое число противников.\n\nПодходит для игроков, которые начинают понимать игру.";
-skill_text3 = "\c[MenuInactive]Стандартная сложность.\n\nРекомендуемый опыт игры в Sonic: Lock & Load.";
-skill_text4 = "\c[MenuInactive]Противники в два раза быстрее.\n\nДостойное испытание для ветеранов.";
-skill_text5 = "\c[Red]Противники быстры, вы получаете двойной урон, а больших колец нет.\n\nВам придётся выложиться по полной.";
-skill_text6 = "\c[Red]Вы погибните с одного удара, и противники тоже.\n\nЭто даже отдалённо не честно!";
+skill_text1 = "\c[Green]Здесь меньше врагов.\n\nРекомендуется, если вы новичок\nв жанре экшн.";
+skill_text2 = "\c[Yellow]Враги атакуют и двигаются медленнее.\n\nРекомендуется для тех, кто только начинает\nзнакомиться с игрой Sonic: Lock & Load.";
+skill_text3 = "\c[LiBlue]Тяжёлая сложность.\nСтандартный игровой процесс по характеристикам.\n\nРекомендуемая для игры в Sonic: Lock & Load.";
+skill_text4 = "\c[Red]Вы получаете удвоенный урон.\n\nВам придётся выложиться по полной.";
+skill_text5 = "\c[Red]Вы умираете с одного удара.\nТак же как и враги.\n\nЭто даже отдалённо не честно!";
 
-sonic		= "\c[MenuInactive]Соник";
+sonic		= "\c[LiBlue]Соник";
 amy			= "\c[Amy]Эми";
 classic		= "\c[Classic]Классический Соник";
 shadow		= "\c[Red]Шэдоу";
@@ -179,7 +178,7 @@ skill1_amy		= "\c[Green]Ветерок";
 skill1_classic	= "\c[Green]Истоки";
 skill1_shadow	= "\c[Green]Пустая трата времени";
 
-skill2 			= "\c[Yellow]Просто";
+skill2 			= "\c[Yellow]Упрощённый";
 skill2_sonic	= "\c[Yellow]А ну попробуй!";
 skill2_amy		= "\c[Yellow]Просто прекрасно!";
 skill2_classic	= "\c[Yellow]Прямо как 1991";
@@ -191,17 +190,11 @@ skill3_amy		= "\c[MenuInactive]Никогда не сдавайся!";
 skill3_classic	= "\c[MenuInactive]Я это SEGA!";
 skill3_shadow	= "\c[MenuInactive]Очередная миссия";
 
-skill4 			= "\c[MenuInactive]Трудно";
-skill4_sonic	= "\c[MenuInactive]Сейчас я покажу вам!";
-skill4_amy		= "\c[MenuInactive]Истинное стремление";
-skill4_classic	= "\c[MenuInactive]Странно, не так ли?";
-skill4_shadow	= "\c[MenuInactive]Супер-форма";
-
-skill5 			= "\c[Red]Слишком быстро";
-skill5_sonic	= "\c[Sonic]Синяя полоса";
-skill5_amy		= "\c[Amy]Шипастая роза";
-skill5_classic	= "\c[Classic]Веселье безгранично";
-skill5_shadow	= "\c[Red]Да здравствует Шэдоу";
+skill4 			= "\c[Red]Сумасшедший";
+skill4_sonic	= "\c[Sonic]Хаотичная скорость";
+skill4_amy		= "\c[Amy]Роза с шипами";
+skill4_classic	= "\c[Classic]Странно, не так ли?";
+skill4_shadow	= "\c[Red]Супер-форма";
 
 gsubtitle1 		= "\c[Sonic] Соник: \c[White] Ну. Это было отстойно.";
 gsubtitle2 		= "\c[Red] Наклз: \c[White] О нет.";
@@ -221,6 +214,10 @@ gsubtitle15		= "\c[Classic] Соник: \c[White] ТЕРИАААААААА!";
 gsubtitle16		= "\c[Shadow] Шэдоу: \c[White] Они не смогут подкалывать тебя, если они уже мертвы!";
 gsubtitle17		= "\c[Shadow] Шэдоу: \c[White] Это проклятый ЧЕТВЁРТЫЙ Изумруд Хаоса!";
 gsubtitle18		= "\c[Sonic] Соник: \c[White] Всё кончено!";
+gsubtitle19		= "\c[Sonic] Соник: \c[Grey] (Просто пустой рюкзак.)";
+gsubtitle20		= "\c[Amy] Эми: \c[Grey] (Какой симпатичный рюкзачок!)";
+gsubtitle21		= "\c[Classic] Соник: \c[Grey] (Ну, по крайней мере, выглядит это круто.)";
+gsubtitle22		= "\c[Classic] Соник: \c[Grey] (Бензопила? Я не могу использовать это...)";
 
 staunt1			= "\c[Sonic] Соник: \c[White] Слишком медленно!";
 staunt2			= "\c[Sonic] Соник: \c[White] Ну же, сделай шаг!";
@@ -248,3 +245,115 @@ cresult2		= "\c[Classic] Соник: \c[White] Хм... без проблем.";
 cresult3		= "\c[Classic] Соник: \c[White] Еле успел...";
 dresult1		= "\c[Shadow] Шэдоу: \c[White] Да!";
 dresult2		= "\c[Shadow] Шэдоу: \c[White] Нужно не отвлекаться.";
+
+stylerank_ss	= "Супер Соник!!!";
+stylerank_s		= "Взлёт!!";
+stylerank_a		= "Искатель приключений!";
+stylerank_b		= "Сверкающий";
+stylerank_c		= "Круиз";
+stylerank_d		= "Дрифтинг";
+
+death_msg1		= "Skill issue.";
+death_msg2		= "Wow, that was the gameplay ever.";
+death_msg3		= "To defeat the enemies, shoot at them until they die.";
+death_msg4		= "Congratulations! You die.";
+death_msg5		= "Trouble with the game, eh?";
+death_msg6		= "You are die. Thank you forever.";
+death_msg7		= "You're really good at this.";
+death_msg8s		= "Clearly you feared the fall.";						// Sonic only
+death_msg8a		= "You ran out of sweet passion.";						// Amy only
+death_msg8c		= "That's no good!";									// Classic only
+death_msg8d		= "Nice going, Mr. Ultimate Life Form.";				// Shadow only
+death_msg9		= "You high-fived the ground.";
+death_msg10		= "You are not fish.";									// Drowning
+death_msg11s	= "And you were doing so well!";						// If at 'Supersonic!!' Style Rank
+death_msg11a	= "That was really stylish up until it wasn't.";		// If at 'Adventurer!' Style Rank
+death_msg11b	= "Not bad, but not great either.";						// If at 'Blazing' Style Rank
+death_msg11cd	= "Try switching weapons from time to time!";			// If at either 'Cruising' or 'Drifting' Style Rank
+death_msg11		= "That's not very stylish of you.";					// If Style System is enabled, but at no Style Rank
+death_msg12		= "You barely even started and you're already dead.";	// If dead within the first two seconds
+death_msg13a	= "Did you just die on easy mode?";						// On first two skill levels
+death_msg13b	= "Maybe don't play on the hardest difficulty.";		// On second-to-last skill level
+death_msg13c	= "I told you it wasn't remotely fair.";				// On 'Oh No'
+death_msg14		= "Easy mode is now selectable.";
+death_msg15		= "Stop trying to rocket jump!";						// If holding Dual Assimilator
+death_msg16		= "Try again.";											// Default message
+
+MENU_NEWGAME 	= "Новая игра";
+MENU_ABOUT 		= "Об игре";
+MENU_OPTIONS 	= "Настройки";
+MENU_LOAD 		= "Загрузка";
+MENU_SAVE 		= "Сохранение";
+MENU_QUIT 		= "Выход";
+MENU_UNSUPPORTED = "Неподдерживаемая игра";
+
+MENU_CHSELECT	= "Выбор персонажа";
+MENU_EPSELECT	= "Выбор эпизода";
+MENU_SKSELECT	= "Выбор сложности";
+
+OB_FALLING = "%o слишком много раз врезал@[refl_rus] в стену.";
+OB_CRUSH = "%o застрял@[ao_rus].";
+OB_EXIT = "%o попытал@[refl_rus] сбежать.";
+OB_WATER = "%o не смог@[irreg_1_rus] вовремя выбраться.";
+OB_BARREL = "%o взлетел@[ao_rus] на воздух.";
+OB_R_SPLASH = "%o не справил@[refl_rus] с прыжком на ракете.";
+OB_ROCKET = "%o не справил@[refl_rus] с прыжком на ракете.";
+OB_KILLEDSELF = "Здесь лежит %o, %g бежал@[ao_rus] быстро и умер@[irreg_2_rus] трусом.";
+
+p_ring = "Получено кольцо.";
+p_ringbox = "Вскрыта коробка с кольцами.";
+p_lostring = "Получено потерянное кольцо.";
+p_chaosring = "Получено кольцо хаоса.";
+p_specialring = "Получено особое кольцо.";
+p_soulring = "Получено кольцо душ.";
+p_soulrecharge = "Получено перезарядка души.";
+p_emeraldrecharge = "Получено изумрудная перезарядка.";
+p_invincibility = "Неуязвимость!";
+p_shadowfever = "Лихорадка шэдоу!";
+p_chaoscapsule1 = "Получена капсула энергии хаоса.";
+p_chaoscapsule2 = "Получена синяя капсула энергии хаоса.";
+p_chaoscapsule3 = "Получена красная капсула энергии хаоса.";
+p_backpack = "Получен рюкзак, в котором ничего нет.";
+p_keytablet = "Получен планшет с ключами.";
+
+p_macandcheese = "Получена коробка с макаронами и сыром.";
+shadow_macandcheese = "\c[Shadow]Я готовлю макароны с сыром,\n\c[Shadow]и никто меня не остановит!";
+
+p_nintendo64 = "Получен Nintendo 64!";
+sonic_nintendo64 = "\c[Sonic]Привет, ребята! Это я, Соник!\n\c[Sonic]На Nintendo 64!\n\c[Sonic]УУУУУУ!";
+
+AMSTR_FOLLOWON = "Привязка к игроку включена";
+AMSTR_FOLLOWOFF = "Привязка к игроку отключена";
+AMSTR_GRIDON = "Сетка карты включена";
+AMSTR_GRIDOFF = "Сетка карты отключена";
+AMSTR_TEXON = "Текстуры карты включены";
+AMSTR_TEXOFF = "Текстуры карты отключены";
+AMSTR_MARKEDSPOT = "Добавлена метка";
+AMSTR_MARKSCLEARED = "Сняты все метки";
+STSTR_MUS = "Смена музыки";
+STSTR_NOMUS = "Такой музыки не существует";
+STSTR_DQDON = "Непобедимость включена";
+STSTR_DQDOFF = "Непобедимость отключена";
+STSTR_DQD2ON = "Режим вознесения включён";
+STSTR_DQD2OFF = "Режим вознесения отключён";
+STSTR_KFAADDED = "Получено всё оружие и ключи!";
+STSTR_FAADDED = "Получено всё оружие!";
+STSTR_NCON = "Режим без столкновений включён";
+STSTR_NCOFF = "Режим без столкновений отключён";
+STSTR_NC2ON = "Режим без столкновений 2 включён";
+STSTR_NC2OFF = "Режим без столкновений 2 отключён";
+STSTR_BEHOLD = "Бессм. (V), сила (S), невид. (I), кост. (R), п. карта (A), ус. света (L).";
+STSTR_BEHOLDX = "Переключён бонус";
+STSTR_CHOPPERS = "Постойте, это незаконно.";
+STSTR_CLEV = "Изменение уровней";
+TXT_BUDDHAON = "Режим Будды включён";
+TXT_BUDDHAOFF = "Режим Будды отключён";
+TXT_BUDDHA2ON = "Окончательный режим Будды включён";
+TXT_BUDDHA2OFF = "Окончательный режим Будды отключён";
+TXT_DEFAULTPICKUPMSG = "Получено что-то.";
+
+s_press = "\c[White]Нажмите \c[Gold]";
+supersonic = " \c[White]чтобы включить \c[Gold]Супер Соника\c[White]!";
+supershadow = " \c[White]чтобы включить \c[Gold]Супер Шэдоу\c[White]!";
+darkamy = ", \c[White]чтобы \c[Purple]обнять тьму\c[White]!";
+hypersonic = ", \c[White]чтобы выйти за пределы!";
