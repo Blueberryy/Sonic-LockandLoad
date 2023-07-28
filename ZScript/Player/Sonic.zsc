@@ -2,7 +2,6 @@ class SonicPlayer : LockLoadPlayer
 {
 	Default
 	{
-		Health 125;
 		Player.DisplayName "$sonic";
 		Player.Face "SNF";
 		Player.SoundClass "sonic";
@@ -23,13 +22,15 @@ class SonicPlayer : LockLoadPlayer
 	override int DamageMobj(Actor inflictor, Actor source, int damage, Name mod)
 	{
 		if (CountInv("PowerSwordParry")) {
-			if (inflictor is "Actor" && inflictor != null && (!inflictor.bMissile || Distance2D(source) < 100)) {
+			if (inflictor != null && inflictor is "Actor" && (!inflictor.bMissile || Distance2D(source) < 100)) {
 				ACS_NamedExecute("ParryEffect");
 				let oldangle = source.angle;
 				source.A_DamageSelf(source.health / 3 + damage / 2, "Parry");
 				source.A_SetAngle(angle);
 				source.A_Recoil(-damage * 2);
 				source.A_SetAngle(oldangle);
+				let style = StyleSystem(EventHandler.Find("StyleSystem"));
+				if (style) style.score += (damage * 512) * GetCvar("StyleRank") + 1;
 				damage = 0;
 			}
 		}
@@ -40,6 +41,7 @@ class SonicPlayer : LockLoadPlayer
 		Super.Tick();
 		if (GetPlayerInput(MODINPUT_BUTTONS) & BT_FORWARD && !(GetPlayerInput(MODINPUT_OLDBUTTONS) & BT_FORWARD)) {
 			A_GiveInventory("AccelPrerequisite");
+			A_GiveInventory("SwordDashPrerequisite");
 		}
 		if (player.ReadyWeapon != null && !(player.ReadyWeapon.GetClassName() == "EclipseBlaster" && GetPlayerInput(INPUT_BUTTONS) & BT_ATTACK)) {
 			// One of these days I need to stop relying on CVARs
@@ -124,7 +126,8 @@ class BoostEnabledWeapon : LockLoadWeapon
 		if (!invoker.BoostCheck) {
 			int speed = sqrt((Vel.X ** 2) + (Vel.Y ** 2));
 			invoker.BoostCheck = true;
-			if (CountInv("PowerAccel")) {
+			bool PressedForward = GetPlayerInput(INPUT_BUTTONS) & BT_ATTACK && (!(GetPlayerInput(INPUT_OLDBUTTONS) & BT_ATTACK));
+			if (CountInv("PowerAccel") || PressedForward) {
 				invoker.BoostSpeed = MaxBoostSpeed;
 				A_PlaySound("sweapons/shockwave", 5);
 			}
@@ -136,28 +139,27 @@ class BoostEnabledWeapon : LockLoadWeapon
 			}
 			A_StartSound("sonic/boost", 6);
 			A_StartSound("sweapons/boost", 7);
+			A_FireBullets(90, 90, 150, 1 + (form * 998), "BoostPuff", FBF_NORANDOM, 60);
 			if (!form) A_TakeInventory("ChaosEnergy", 5);
 		}
 		switch (form) {
 			default:
 				/* Sonic */
 				A_SetMugShotState("Boost");
-				A_FireBullets(60, 60, 150, 1, "BoostPuff", FBF_NORANDOM, 125);
 				A_TakeInventory("ChaosEnergy", 2);
 				break;
 			case 1:
 				/* Super Sonic */
 				A_SetMugShotState("SuperBoost");
-				A_FireBullets(120, 120, 150, 999, "BoostPuff", FBF_NORANDOM, 140);
 				A_TakeInventory("ChaosEnergy", 1);
 				break;
 			case 2:
 				/* Hyper Sonic */
 				A_SetMugShotState("HyperBoost");
-				A_FireBullets(120, 120, 150, 999, "BoostPuff", FBF_NORANDOM, 140);
 				break;
 		}
 		A_PlaySound("sweapons/boosttrail", 1, 1.0, true);
+		A_GiveInventory("BoostDamageReduction");
 		A_ChangeVelocity(invoker.BoostSpeed, 0, Vel.Z, CVF_Relative|CVF_Replace);
 		if ((GetPlayerInput(MODINPUT_BUTTONS) & BT_JUMP) && !(GetPlayerInput(MODINPUT_OLDBUTTONS) & BT_JUMP) && A_CheckFloor("Null")) {
 			A_ChangeVelocity(0, 0, invoker.BoostSpeed / 10, CVF_Relative);
@@ -178,7 +180,9 @@ class BoostEnabledWeapon : LockLoadWeapon
 		}
 		A_ChangeVelocity(CrashSpeed, 0, VerticalCrashSpeed, CVF_Relative|CVF_Replace);
 		A_StartSound("sweapons/finalhit", 8);
-		DamageThing(invoker.BoostSpeed / 10, 17);
+		if (Health > 20) {
+			DamageThing(invoker.BoostSpeed / 3, 17);
+		}
 	}
 	States
 	{
@@ -222,23 +226,37 @@ class BoostEnabledWeapon : LockLoadWeapon
 			TNT1 A 0 A_JumpIf(!GetCvar("WallCrash"), "BoostEnd");
 			TNT1 A 0 WallCrash();
 		BoostEnd:
-			BOOS # 5 {
+			BOOS A 0 {
 				invoker.BoostCheck = false;
 				A_StopSound(1);
 				A_Light(0);
+				if (CountInv("PowerHyper")) A_Overlay(-27, "HyperBoostFadeOut");
+				else if (CountInv("PowerSuper")) A_Overlay(-27, "SuperBoostFadeOut");
+				else A_Overlay(-27, "BoostFadeOut");
 			}
 			Goto Ready;
+		BoostFadeOut:
+			BOOS A 5;
+			Stop;
+		SuperBoostFadeOut:
+			BOOS B 5;
+			Stop;
+		HyperBoostFadeOut:
+			BOOS C 5;
+			Stop;
 	}
 }
 
 class Caliburn : BoostEnabledWeapon
 {
 	double oldVelZ;
+	int DamageBonus;
 	override void Tick()
 	{
 		oldVelZ = vel.z;
 		super.Tick();
 	}
+	
 	action state A_CheckSolidFooting(StateLabel label, int flags = CSF_ALL)
 	{
 		if (invoker.oldVelZ != vel.z) {
@@ -261,12 +279,48 @@ class Caliburn : BoostEnabledWeapon
 		}
 		return null;
 	}
-	action void SwordAttack(int damage)
+	
+	action void SwordAttack(int damage, double distance, bool right_facing, int horizontal_spread = 75, int attack_count = 30)
 	{
-		int AttackCount = 30;
-		for (int x = 0; x <= AttackCount; x++) {
-			FTranslatedLineTarget t;
-			LineAttack(angle + random(-75, 75), 90, pitch, damage / AttackCount * random(1, 8), 'Melee', "SwordPuff", LAF_ISMELEEATTACK, t);
+		A_StartSound("sweapons/swordswing", 9);
+		SwordDash(GetPlayerInput(INPUT_FORWARDMOVE), distance);
+		if (GetCvar("EnergyBlades")) FireEnergyBlade(distance, right_facing);
+		PerformMeleeAttack(damage + invoker.DamageBonus * 2, distance, angle, pitch, attack_count, horizontal_spread);
+	}
+
+	action void SwordDash(double forwardMove, double distance)
+	{
+		bool PressedForward = GetPlayerInput(INPUT_BUTTONS) & BT_ATTACK && (!(GetPlayerInput(INPUT_OLDBUTTONS) & BT_ATTACK));
+		if (CountInv("PowerSDash") || PressedForward) {
+			/* Check if the player recently pressed the forward key */
+			A_ChangeVelocity(distance / 3, 0, 0, CVF_Relative);
+		}
+	}
+
+	action void FireEnergyBlade(double distance, bool right_facing)
+	{
+		FTranslatedLineTarget t;
+		LineAttack(angle, distance, pitch, 0, 'Melee', "SwordPuff", LAF_ISMELEEATTACK, t);
+		if (t.linetarget) return;
+		if (CountInv("PowerSuper") || CountInv("PowerHyper")) {
+			A_PlaySound("sweapons/soulsurge", 6, 0.5);
+			string direction = right_facing ? "Right" : "Left";
+			if (CountInv("PowerSuper")) {
+				A_FireProjectile("EnergyBlade"..direction, 0, 0);
+			}
+			else if (CountInv("PowerHyper")) {
+				A_FireProjectile("HyperEnergyBlade"..direction, 0, 0);
+			}
+		}
+	}
+
+	action void PerformMeleeAttack(int damage, double distance, double angle, double pitch, int attack_count, int horizontal_spread)
+	{
+		FTranslatedLineTarget t;
+		for (int x = 0; x <= attack_count; x++) {
+			double spread_angle = random(horizontal_spread * -1, horizontal_spread);
+			int attack_angle = angle + spread_angle;
+			LineAttack(attack_angle, distance, pitch, damage / attack_count * random(1, 8), 'Melee', "SwordPuff", LAF_ISMELEEATTACK, t);
 			if (t.linetarget) {
 				A_StartSound("sweapons/finalhit", CHAN_WEAPON);
 			}
@@ -296,58 +350,63 @@ class Caliburn : BoostEnabledWeapon
 			CALI # 1 A_Lower(20);
 			Loop;
 		Select:
+			TNT1 A 0 {
+				if (GetPlayerInput(MODINPUT_BUTTONS) & BT_ATTACK) {
+					A_Raise(200); // About as close as we can get for "instant"
+					return ResolveState("QuickswapSlash");
+				}
+				return ResolveState(null);
+			}
 			CALI A 1 A_Raise(20);
 			Loop;
 		Fire:
 			TNT1 A 0 A_GiveInventory("SwordParry");
-			/* passthrough */
+			Goto Slash1;
+		QuickswapSlash:
+			CAL1 A 1 A_GiveInventory("SwordParry");
+			TNT1 A 0 SwordAttack(80, 720, false, 25, 80);
+			Goto Slash1+2;
 		Slash1:
-			TNT1 A 0 {
-				if (CountInv("PowerSuper") || CountInv("PowerHyper")) {
-					A_PlaySound("sweapons/soulsurge", 6, 0.5);
-					if (CountInv("PowerHyper")) A_FireProjectile("HyperEnergyBladeLeft", 0, 0);
-					else {
-						A_FireProjectile("EnergyBladeLeft", 0, 0);
-						A_TakeInventory("ChaosEnergy", 4);
-					}
-				}
-			}
 			CAL1 A 1;
-			TNT1 A 0 A_StartSound("sweapons/swordswing", 9);
-			TNT1 A 0 SwordAttack(40);
+			TNT1 A 0 SwordAttack(40, 90, false);
+			TNT1 A 0 { invoker.DamageBonus = 0; }
 			CAL1 BCD 1 A_WeaponReady(WRF_NOBOB|WRF_NOFIRE);
-			CAL1 EEEEE 1 Bright {
+			CAL1 EEEEEEEEEEEEEE 1 Bright {
 				A_WeaponReady(WRF_NOBOB|WRF_NOFIRE);
-				if (GetPlayerInput(MODINPUT_BUTTONS) & BT_ATTACK && (!(GetPlayerInput(MODINPUT_OLDBUTTONS) & BT_ATTACK) || (CountInv("PowerSuper") || CountInv("PowerHyper")))) {
+				invoker.DamageBonus++;
+				if (GetPlayerInput(MODINPUT_BUTTONS) & BT_ATTACK && (!(GetPlayerInput(MODINPUT_OLDBUTTONS) & BT_ATTACK))) {
 					return ResolveState("Slash2");
 				}
 				return ResolveState(null);
 			}
 			Goto Ready;
+		BoostedSlash:
+			CAL1 A 1;
+			TNT1 A 0 SwordAttack(120 + invoker.BoostSpeed, 240, false);
+			Goto Slash1+2;
 		Slash2:
-			TNT1 A 0 {
-				if (CountInv("PowerSuper") || CountInv("PowerHyper")) {
-					A_PlaySound("sweapons/soulsurge", 6, 0.5);
-					if (CountInv("PowerHyper")) A_FireProjectile("HyperEnergyBladeRight", 0, 0);
-					else {
-						A_FireProjectile("EnergyBladeRight", 0, 0);
-						A_TakeInventory("ChaosEnergy", 4);
-					}
-				}
-			}
-			TNT1 A 0 A_StartSound("sweapons/swordswing", 9);
-			TNT1 A 0 SwordAttack(40);
-			CAL2 ABCD 1 A_WeaponReady(WRF_NOBOB|WRF_NOFIRE);
-			CAL2 EEEEE 1 Bright {
+			CAL2 A 1;
+			TNT1 A 0 SwordAttack(40, 90, true);
+			CAL2 BCD 1 A_WeaponReady(WRF_NOBOB|WRF_NOFIRE);
+			CAL2 EEEEEEEEEEEEEE 1 Bright {
 				A_WeaponReady(WRF_NOBOB|WRF_NOFIRE);
-				if (GetPlayerInput(MODINPUT_BUTTONS) & BT_ATTACK && (!(GetPlayerInput(MODINPUT_OLDBUTTONS) & BT_ATTACK) || (CountInv("PowerSuper") || CountInv("PowerHyper")))) {
+				invoker.DamageBonus++;
+				if (GetPlayerInput(MODINPUT_BUTTONS) & BT_ATTACK && (!(GetPlayerInput(MODINPUT_OLDBUTTONS) & BT_ATTACK))) {
 					return ResolveState("Slash1");
 				}
 				return ResolveState(null);
 			}
 			Goto Ready;
 		AltFire:
-			TNT1 A 0 A_Overlay(-3, "BoostStart");
+			TNT1 A 0 {
+				if (GetPlayerInput(MODINPUT_BUTTONS) & BT_ATTACK && (!(GetPlayerInput(MODINPUT_OLDBUTTONS) & BT_ATTACK))) {
+					A_Overlay(-3, "BoostEnd");
+					A_GiveInventory("SwordParry");
+					return ResolveState("BoostedSlash");
+				}
+				A_Overlay(-3, "BoostStart");
+				return ResolveState(null);
+			}
 			Goto Ready;
 		SoulCharge:
 			SOUS AAABBBCCCDDDEEEFFFGGG 1 {
@@ -415,11 +474,11 @@ class AcceleratedPistol : LockLoadWeapon
 			A_ChangeVelocity (Cos(Pitch) * (-10 - recoilbonus), 0, Sin(Pitch) * (10 + recoilbonus), CVF_Relative);
 		}
 		else if (invoker.charge >= 50) {
-			A_RailAttack(90 + strengthbonus, 0, 1, "009c9f", "6364bb", RGF_FULLBRIGHT, 0, "BulletPuff", 0, 0, 0, 25, 1.0, 1.0);
+			A_RailAttack(65 + strengthbonus, 0, 1, "009c9f", "6364bb", RGF_FULLBRIGHT, 0, "BulletPuff", 0, 0, 0, 25, 1.0, 1.0);
 			A_ChangeVelocity (Cos(Pitch) * (-10 - recoilbonus), 0, Sin(Pitch) * (10 + recoilbonus), CVF_Relative);
 		}
 		else {
-			A_RailAttack(80 + strengthbonus, 0, 1, "c5feff", "c5c6ff", RGF_FULLBRIGHT, 0, "BulletPuff", 0, 0, 0, 25, 1.0, 1.0);
+			A_RailAttack(30 + strengthbonus, 0, 1, "c5feff", "c5c6ff", RGF_FULLBRIGHT, 0, "BulletPuff", 0, 0, 0, 25, 1.0, 1.0);
 			A_ChangeVelocity (Cos(Pitch) * (-7 - recoilbonus), 0, Sin(Pitch) * (7 + recoilbonus), CVF_Relative);
 		}
 		A_GunFlash("BurstFlash");
@@ -457,8 +516,8 @@ class AcceleratedPistol : LockLoadWeapon
 		Fire:
 			SPIS AAA 2 {
 				A_PlaySound("sweapons/pistol", 1);
-				if (!player.onground) A_FireBullets(0, 0, 1, 30, "NoGibPuff");
-				else A_FireBullets(0, 0, 1, 15, "NoGibPuff");
+				if (!player.onground) A_FireBullets(0, 0, 1, 30, "BulletPuff");
+				else A_FireBullets(0, 0, 1, 15, "BulletPuff");
 				A_GunFlash();
 				A_WeaponReady(WRF_NOBOB|WRF_NOFIRE);
 			}
@@ -474,8 +533,12 @@ class AcceleratedPistol : LockLoadWeapon
 						A_WeaponReady(WRF_NOBOB|WRF_NOFIRE|WRF_NOSWITCH);
 					}
 					else {
-						A_WeaponReady(WRF_NOFIRE|WRF_NOSWITCH);
+						A_WeaponReady(WRF_NOBOB|WRF_NOFIRE|WRF_NOSWITCH);
 					}
+					if (invoker.charge < 2) A_Overlay(-8, "Charge1");
+					else if (invoker.charge < 4) A_Overlay(-8, "Charge2");
+					else if (invoker.charge < 50) A_Overlay(-8, "Charge3");
+					else if (invoker.charge == 50) A_Overlay(-8, "ChargeFull");
 					if (GetPlayerInput(MODINPUT_BUTTONS) & BT_ATTACK) return ResolveState("RecoilBurst");
 				}
 				return ResolveState(null);
@@ -483,6 +546,7 @@ class AcceleratedPistol : LockLoadWeapon
 			TNT1 A 0 A_ReFire("RecoilCharge");
 			TNT1 A 0 A_JumpIf(GetCvar("RecoilBurstRelease"), "RecoilBurst");
 			TNT1 A 0 {
+				A_Overlay(-8, "Uncharge");
 				A_ZoomFactor(1);
 				A_StopSound(1);
 				invoker.charge = 0;
@@ -490,6 +554,10 @@ class AcceleratedPistol : LockLoadWeapon
 			Goto Ready;
 		RecoilBurst:
 			TNT1 A 0 A_ZoomFactor(1);
+			TNT1 A 0 {
+				if (invoker.charge > 49) A_Quake(2, 10, 0, 128, "");
+				else A_Quake(1, 10, 0, 128, "");
+			}
 			SPIS B 1 RecoilBurst();
 			SPIS BBBBBBCDEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEDCB 1 {
 				A_WeaponReady(WRF_NOBOB|WRF_NOFIRE);
@@ -504,6 +572,21 @@ class AcceleratedPistol : LockLoadWeapon
 		BurstFlash:
 			SPIF B 4 Bright A_Light1;
 			Goto LightDone;
+		Charge1:
+			RCBC A 1 Bright;
+			Stop;
+		Charge2:
+			RCBC B 1 Bright;
+			Stop;
+		Charge3:
+			RCBC C 1 Bright;
+			Stop;
+		ChargeFull:
+			RCBC D 1 Bright;
+			Stop;
+		Uncharge:
+			RCBC CBA 1 Bright;
+			Stop;
 		Spawn:
 			PIST A -1;
 			Stop;
@@ -516,7 +599,7 @@ class KineticShotty : LockLoadWeapon
 	{
 		A_PlaySound("sweapons/nspeedyshot", 1);
 		double overall_vel	= sqrt(Vel.X ** 2 + Vel.Y ** 2);
-		int	num_bullets		= 20 + overall_vel / 2;
+		int	num_bullets		= 20 + overall_vel / 3;
 		A_FireBullets(20, 14, num_bullets, 7, "BulletPuff");
 		A_FireBullets(2, 2, 8, 5, "BulletPuff", 0);
 		A_GunFlash();
@@ -770,7 +853,7 @@ class SonicKick : CustomInventory
 	int inuse;
 	int EXKick;
 	bool DidTarget;
-	action void HomeInOnTarget()
+	action bool HomeInOnTarget()
 	{
 		invoker.DidTarget = false;
 		FTranslatedLineTarget ltinfo;
@@ -781,6 +864,20 @@ class SonicKick : CustomInventory
 			invoker.DidTarget = true;
 			A_Stop();
 			double ltdistance = Distance2D(ltarget);
+			A_SetAngle(ltinfo.angleFromSource);
+			Vel = (ltarget.Pos - Pos) / 2;
+			A_StartSound("sweapons/sdash", 8);
+			cvar.FindCvar("DidHoming").SetBool(true);
+			return true;
+		}
+		cvar.FindCvar("DidHoming").SetBool(false);
+		return false;
+	}
+	action void SnapToTarget()
+	{
+		if (target) {
+			double oriX = (-40 - target.radius) * cos(angle) - 0 * sin(angle);
+			double oriY = (-40 - target.radius) * sin(angle) + 0 * cos(angle);
 			double zoffset;
 			if (pitch <= -55) {
 				A_SetPitch(-55);
@@ -793,11 +890,7 @@ class SonicKick : CustomInventory
 				zoffset = 30;
 			}
 			else zoffset = 1.2;
-			A_SetAngle(ltinfo.angleFromSource);
-			double oriX = (-40 - ltarget.radius) * cos(angle) - 0 * sin(angle);
-			double oriY = (-40 - ltarget.radius) * sin(angle) + 0 * cos(angle);
-			SetOrigin(ltarget.Vec3Offset(oriX, oriY, zoffset), false);
-			A_StartSound("sweapons/sdash", 8);
+			SetOrigin(target.Vec3Offset(oriX, oriY, zoffset), false);
 		}
 	}
 	action void SonicKickAttack(int damage, int randfactor, int range)
@@ -808,7 +901,7 @@ class SonicKick : CustomInventory
 			A_StartSound("sweapons/finalhit", 10);
 		}
 		else {
-			A_CustomPunch(random(1, randfactor) * damage, true, CPF_NOTURN, "SonicKickPuff", range, 0, 0, "ArmorBonus", "sweapons/finalhit");
+			A_CustomPunch(damage * random(1, randfactor), true, CPF_NOTURN, "SonicKickPuff", range, 0, 0, "ArmorBonus", "sweapons/finalhit");
 		}
 	}
 	States
@@ -822,43 +915,71 @@ class SonicKick : CustomInventory
 			TNT1 A 0 A_CheckFloor("KickAttack");
 			TNT1 A 0 { invoker.EXKick = 1; }
 		KickAttack:
-			TNT1 A 0 HomeInOnTarget();
-			TNT1 A 0 A_JumpIfInventory("PowerSuper", 1, "SuperKickAttack");
-			TNT1 A 0 A_JumpIfInventory("PowerHyper", 1, "HyperKickAttack");
+			TNT1 A 0 A_JumpIf(HomeInOnTarget(), "TargetSnap");
 			TNT1 A 0 A_AlertMonsters();
 			TNT1 A 0 A_PlaySound("sonic/grunt", 8);
-			TNT1 A 0 A_JumpIf(invoker.EXKick > 0, "SonicEagle");
+			TNT1 A 0 {
+				if (!invoker.EXKick) {
+					if (CountInv("PowerHyper")) A_Overlay(-5, "HyperGroundKick");
+					else if (CountInv("PowerSuper")) A_Overlay(-5, "SuperGroundKick");
+					else A_Overlay(-5, "GroundKick");
+				}
+				else {
+					if (CountInv("PowerHyper")) A_Overlay(-5, "HyperAerialKick");
+					else if (CountInv("PowerSuper")) A_Overlay(-5, "SuperAerialKick");
+					else A_Overlay(-5, "AerialKick");
+				}
+				A_OverlayOffset(-5, 0, 32);
+			}
+			Stop;
+		TargetSnap:
+			TNT1 A 1;
+			TNT1 A 0 A_AlertMonsters();
+			TNT1 A 0 A_PlaySound("sonic/grunt", 8);
+			TNT1 A 0 {
+				if (!invoker.EXKick) {
+					if (CountInv("PowerHyper")) A_Overlay(-5, "HyperGroundKick");
+					else if (CountInv("PowerSuper")) A_Overlay(-5, "SuperGroundKick");
+					else A_Overlay(-5, "GroundKick");
+					A_OverlayOffset(-5, 0, 32);
+				}
+				else {
+					if (CountInv("PowerHyper")) A_Overlay(-5, "HyperAerialKick");
+					else if (CountInv("PowerSuper")) A_Overlay(-5, "SuperAerialKick");
+					else A_Overlay(-5, "AerialKick");
+					A_OverlayOffset(-5, 0, 32);
+				}
+			}
+			TNT1 A 1 A_Stop();
+			TNT1 A 1 SnapToTarget();
+			TNT1 A 0 A_ChangeVelocity(-12, 0, 15, CVF_Relative);
+			TNT1 A 0 { cvar.FindCvar("DidHoming").SetBool(false); }
+			Stop;
+		GroundKick:
 			KICK A 1 A_PlaySound("sweapons/swordswing", 7);
 			KICK BC 1;
 			KICK D 1 SonicKickAttack(48, 4, 120);
 			KICK EF 1;
 			Stop;
-		SonicEagle:
+		AerialKick:
 			EAGL A 1 A_PlaySound("sweapons/swordswing", 7);
-			EAGL BC 1 { if (invoker.DidTarget) A_Stop(); }
+			EAGL BC 1;
 			EAGL D 1 SonicKickAttack(96, 4, 160);
 			EAGL E 1;
 			Stop;
-		SuperKickAttack:
-			TNT1 A 0 A_GiveInventory("KickCooldown", 25);
-			TNT1 A 0 A_AlertMonsters();
-			TNT1 A 0 A_PlaySound("sonic/grunt", 8);
-			TNT1 A 0 A_JumpIf(invoker.EXKick > 0, "SuperSonicEagle");
+		SuperGroundKick:
 			SKIK A 1 A_PlaySound("sweapons/swordswing", 7);
 			SKIK BC 1;
 			SKIK D 1 SonicKickAttack(48, 16, 120);
 			SKIK E 1;
 			Stop;
-		SuperSonicEagle:
+		SuperAerialKick:
 			SEAG A 1 A_PlaySound("sweapons/swordswing", 7);
-			SEAG BC 1 { if (invoker.DidTarget) A_Stop(); }
+			SEAG BC 1;
 			SEAG D 1 SonicKickAttack(96, 16, 160);
 			SEAG E 1;
 			Stop;
-		HyperKickAttack:
-			TNT1 A 0 A_AlertMonsters();
-			TNT1 A 0 A_PlaySound("sonic/grunt", 8);
-			TNT1 A 0 A_JumpIf(invoker.EXKick > 0, "HyperSonicEagle");
+		HyperGroundKick:
 			HKIK A 1 {
 				A_PlaySound("sweapons/shockwave", 7);
 				A_FireBullets(25, 10, 75, 5, "GibPuff", 0);
@@ -867,12 +988,12 @@ class SonicKick : CustomInventory
 			HKIK D 1 SonicKickAttack(48, 16, 120);
 			HKIK EF 1;
 			Stop;
-		HyperSonicEagle:
+		HyperAerialKick:
 			HEAG A 1 {
 				A_PlaySound("sweapons/shockwave", 7);
 				A_FireBullets(5, 5, 100, 10, "GibPuff", 0);
 			}
-			HEAG BC 1 { if (invoker.DidTarget) A_Stop(); }
+			HEAG BC 1;
 			HEAG D 1 SonicKickAttack(96, 16, 160);
 			HEAG E 1;
 			Stop;
@@ -890,7 +1011,7 @@ class SonicKick : CustomInventory
 		if (owner is "PlayerPawn" && owner.GetPlayerInput(MODINPUT_BUTTONS)&BT_RELOAD && !(owner.GetPlayerInput(MODINPUT_OLDBUTTONS)&BT_RELOAD) && inuse == 0)
 		{
 			owner.UseInventory(self);
-			inuse = 6;
+			inuse = 10;
 		}
 	}
 }
@@ -933,7 +1054,7 @@ class HomingSnapQuickStep : CustomInventory
 				}
 				else {
 					/* Homing Snap */
-					if (ltarget && Distance3D(ltarget) > 128 && health > 0) {
+					if (ltarget && Distance3D(ltarget) > 128 && health > 0 && GetCvar("HomingSnap")) {
 						double ltdistance = Distance2D(ltarget);
 						double oriX = -120 * cos(angle) - 0 * sin(angle);
 						double oriY = -120 * sin(angle) + 0 * cos(angle);

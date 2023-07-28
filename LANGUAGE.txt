@@ -54,7 +54,7 @@ E3TEXT =
 	"Amy looks at him, confused.";
 E4TEXT =
 	"Amy looks uneasy. 'Come on! What are the chances\n"
-	"there's ANOTHER one of those weird spider robots?'\n"
+	"there's ANOTHER one of those weird spider robots?\n"
 	"\n"
 	"Sonic stares at her, his eye twitching.\n"
 	"\n"
@@ -86,7 +86,7 @@ C3TEXT =
 	"Shadow, not turning around, explains.\n"
 	"'This is where those creatures are coming from.'\n"
 	"\n"
-	"Sonic is confused. 'How did you even...?'\n"
+	"Sonic is confused. 'How did you even...?\n"
 	"\n"
 	"Shadow looks back at them. 'If we go through\n"
 	"this portal, we'll be taken to their world.'"
@@ -157,18 +157,17 @@ MNU_DELETESG = "Delete the save data ";
 WI_FINISHED			= "STAGE COMPLETE";
 WI_ENTERING			= "NEXT STAGE";
 
-DOSY = "\c[MenuInactive] Thanks for playing Sonic: Lock & Load!\nAre you sure you want to quit?";
+DOSY = "\c[LiBlue] Thanks for playing Sonic: Lock & Load!\nAre you sure you want to quit?";
 
 STARTUP1 = "\c[Sonic]Welcome to Sonic: Lock & Load!";
 
-skill_text1 = "\c[Green]There's basically no enemy opposition.\n\nRecommended for complete beginners.";
-skill_text2 = "\c[Yellow]Reduced enemy count.\n\nGood for when you're finding your footing.";
-skill_text3 = "\c[MenuInactive]Standard difficulty.\n\nThe recommended Sonic: Lock & Load experience.";
-skill_text4 = "\c[MenuInactive]Enemies are twice as fast.\n\nA decent challenge for veterans.";
-skill_text5 = "\c[Red]Enemies are fast, you take double damage and large Ring pickups are gone.\n\nYou'd best bring your best.";
-skill_text6 = "\c[Red]You die in one hit, and so do the enemies.\n\nThis isn't even remotely fair!";
+skill_text1 = "\c[Green]There are less enemies around.\n\nRecommended if you're new\nto action games.";
+skill_text2 = "\c[Yellow]Enemies attack and move slower.\n\nRecommended for people new\nto Sonic: Lock & Load.";
+skill_text3 = "\c[LiBlue]Hard difficulty.\nStandard gameplay across the board.\n\nThe recommended Sonic: Lock & Load experience.";
+skill_text4 = "\c[Red]You take twice the usual damage.\n\nYou'd best bring your best.";
+skill_text5 = "\c[Red]You die in one hit.\nSo do the enemies.\n\nThis isn't even remotely fair!";
 
-sonic		= "\c[MenuInactive]Sonic";
+sonic		= "\c[LiBlue]Sonic";
 amy			= "\c[Amy]Amy";
 classic		= "\c[Classic]C.Sonic";
 shadow		= "\c[Red]Shadow";
@@ -179,7 +178,7 @@ skill1_amy		= "\c[Green]A breeze";
 skill1_classic	= "\c[Green]Genesis";
 skill1_shadow	= "\c[Green]Waste of time";
 
-skill2 			= "\c[Yellow]Simple";
+skill2 			= "\c[Yellow]Simplified";
 skill2_sonic	= "\c[Yellow]Bring it on!";
 skill2_amy		= "\c[Yellow]Just perfect!";
 skill2_classic	= "\c[Yellow]Like 1991";
@@ -191,17 +190,11 @@ skill3_amy		= "\c[MenuInactive]Never give up!";
 skill3_classic	= "\c[MenuInactive]I am SEGA!";
 skill3_shadow	= "\c[MenuInactive]Another mission";
 
-skill4 			= "\c[MenuInactive]Tough";
-skill4_sonic	= "\c[MenuInactive]Now I'll show you!";
-skill4_amy		= "\c[MenuInactive]True passion";
-skill4_classic	= "\c[MenuInactive]Strange, isn't it?";
-skill4_shadow	= "\c[MenuInactive]Ultimate life form";
-
-skill5 			= "\c[Red]Too fast";
-skill5_sonic	= "\c[Sonic]Blue Streak";
-skill5_amy		= "\c[Amy]Thorned Rose";
-skill5_classic	= "\c[Classic]Fun is infinite";
-skill5_shadow	= "\c[Red]All Fail Shadow";
+skill4 			= "\c[Red]Insane";
+skill4_sonic	= "\c[Sonic]Chaotic Velocity";
+skill4_amy		= "\c[Amy]Rose With Thorns";
+skill4_classic	= "\c[Classic]Strange, Isn't It?";
+skill4_shadow	= "\c[Red]Ultimate Life Form";
 
 gsubtitle1 		= "\c[Sonic] Sonic: \c[White] Well. That was lame.";
 gsubtitle2 		= "\c[Red] Knuckles: \c[White] Oh no.";
@@ -221,6 +214,10 @@ gsubtitle15		= "\c[Classic] Sonic: \c[White] TERIAAAAAAAA!";
 gsubtitle16		= "\c[Shadow] Shadow: \c[White] they cant troll you if there dead!";
 gsubtitle17		= "\c[Shadow] Shadow: \c[White] That damn FOURTH Chaos Emerald!";
 gsubtitle18		= "\c[Sonic] Sonic: \c[White] You're over!";
+gsubtitle19		= "\c[Sonic] Sonic: \c[Grey] (Just an empty backpack.)";
+gsubtitle20		= "\c[Amy] Amy: \c[Grey] (What a pretty backpack!)";
+gsubtitle21		= "\c[Classic] Sonic: \c[Grey] (Oh, well, at least it looks cool.)";
+gsubtitle22		= "\c[Classic] Sonic: \c[Grey] (Chainsaw, huh? I can't use this...)";
 
 staunt1			= "\c[Sonic] Sonic: \c[White] You're too slow!";
 staunt2			= "\c[Sonic] Sonic: \c[White] Come on, step it up!";
@@ -249,6 +246,13 @@ cresult3		= "\c[Classic] Sonic: \c[White] Barely made it...";
 dresult1		= "\c[Shadow] Shadow: \c[White] Yes!";
 dresult2		= "\c[Shadow] Shadow: \c[White] Need to stay focused.";
 
+stylerank_ss	= "Super Sonic!!!";
+stylerank_s		= "Skyrocketing!!";
+stylerank_a		= "Adventurer!";
+stylerank_b		= "Blazing";
+stylerank_c		= "Cruising";
+stylerank_d		= "Drifting";
+
 death_msg1		= "Skill issue.";
 death_msg2		= "Wow, that was the gameplay ever.";
 death_msg3		= "To defeat the enemies, shoot at them until they die.";
@@ -262,7 +266,11 @@ death_msg8c		= "That's no good!";									// Classic only
 death_msg8d		= "Nice going, Mr. Ultimate Life Form.";				// Shadow only
 death_msg9		= "You high-fived the ground.";
 death_msg10		= "You are not fish.";									// Drowning
-death_msg11		= "Insert death message here.";
+death_msg11s	= "And you were doing so well!";						// If at 'Supersonic!!' Style Rank
+death_msg11a	= "That was really stylish up until it wasn't.";		// If at 'Adventurer!' Style Rank
+death_msg11b	= "Not bad, but not great either.";						// If at 'Blazing' Style Rank
+death_msg11cd	= "Try switching weapons from time to time!";			// If at either 'Cruising' or 'Drifting' Style Rank
+death_msg11		= "That's not very stylish of you.";					// If Style System is enabled, but at no Style Rank
 death_msg12		= "You barely even started and you're already dead.";	// If dead within the first two seconds
 death_msg13a	= "Did you just die on easy mode?";						// On first two skill levels
 death_msg13b	= "Maybe don't play on the hardest difficulty.";		// On second-to-last skill level
@@ -291,6 +299,28 @@ OB_BARREL = "%o went boom.";
 OB_R_SPLASH = "%o failed the rocket jump.";
 OB_ROCKET = "%o failed the rocket jump.";
 OB_KILLEDSELF = "Here lies %o, %g ran fast and died a coward.";
+
+p_ring = "Picked up a ring.";
+p_ringbox = "Broke open a box of rings.";
+p_lostring = "Picked up a lost ring.";
+p_chaosring = "Picked up a Chaos Ring.";
+p_specialring = "Picked up a Special Ring.";
+p_soulring = "Picked up a Soul Ring.";
+p_soulrecharge = "Picked up a Soul Recharge.";
+p_emeraldrecharge = "Picked up an Emerald Recharge.";
+p_invincibility = "Invincibility!";
+p_shadowfever = "Shadow Fever!";
+p_chaoscapsule1 = "Picked up a Chaos Energy capsule.";
+p_chaoscapsule2 = "Picked up a blue Chaos Energy capsule.";
+p_chaoscapsule3 = "Picked up a red Chaos Energy capsule.";
+p_backpack = "Picked up a backpack with nothing in it.";
+p_keytablet = "Picked up a Key Tablet.";
+
+p_macandcheese = "Picked up a box of mac and cheese.";
+shadow_macandcheese = "\c[Shadow]I'm making mac and cheese,\n\c[Shadow]and nobody can stop me!";
+
+p_nintendo64 = "You got the Nintendo 64!";
+sonic_nintendo64 = "\c[Sonic]Hey, guys! It's me, Sonic!\n\c[Sonic]On the Nintendo 64!\n\c[Sonic]WOOOOOO!";
 
 AMSTR_FOLLOWON = "Follow mode enabled";
 AMSTR_FOLLOWOFF = "Follow mode disabled";
@@ -321,3 +351,9 @@ TXT_BUDDHAOFF = "Buddha mode disabled";
 TXT_BUDDHA2ON = "Ultimate Buddha Mode enabled";
 TXT_BUDDHA2OFF = "Ultimate Buddha Mode disabled";
 TXT_DEFAULTPICKUPMSG = "Picked up something.";
+
+s_press = "\c[White]Press \c[Gold]";
+supersonic = " \c[White]to activate \c[Gold]Super Sonic\c[White]!";
+supershadow = " \c[White]to activate \c[Gold]Super Shadow\c[White]!";
+darkamy = " \c[White]to \c[Purple]embrace the darkness\c[White]!";
+hypersonic = " \c[White]to go even further beyond!";

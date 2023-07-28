@@ -3,10 +3,10 @@ LISTMENU "MainMenu"
 	Position 110, 54
 	Font "BIGFONT", "InactiveOption", "ActiveOption"
 	TextItem "$MENU_NEWGAME", "n", "PlayerClassMenu"
-	TextItem "$MENU_ABOUT", "r", "ReadThisMenu"
-	TextItem "$MENU_OPTIONS","o", "LockandLoadOptions"
 	TextItem "$MENU_LOAD", "l", "LoadGameMenu"
 	TextItem "$MENU_SAVE", "s", "SaveGameMenu"
+	TextItem "$MENU_OPTIONS","o", "LockandLoadOptions"
+	TextItem "$MENU_ABOUT", "r", "ReadThisMenu"
 	TextItem "$MENU_QUIT", "q", "QuitMenu"
 	IfGame(Heretic, Hexen, Strife, Chex)
 	{
@@ -30,9 +30,9 @@ ListMenu "EpisodeMenu"
 }
 ListMenu "SkillMenu"
 {
-	Position 58, 74
+	Position 58, 78
 	Font "BIGFONT", "ActiveOption"
-	StaticText 80, 58, "$MENU_SKSELECT"
+	StaticText 80, 48, "$MENU_SKSELECT"
 	Font "BIGFONT", "InactiveOption", "ActiveOption"
 }
 OptionMenu "LockandLoadOptions"
@@ -40,18 +40,13 @@ OptionMenu "LockandLoadOptions"
 	Title "Options"
 	
 	StaticText "Configure Sonic: Lock & Load.", "White"
-	StaticText "Change your controls, the choices of music tracks,", "White"
-	StaticText "the characters' abilities, or access the GZDoom", "White"
-	StaticText "options.", "White"
+	StaticText "Customise your gameplay experience with these options.", "White"
 	StaticText ""
-	
-	StaticText "General", "MenuActive"
-	SubMenu "Configure Controls", "LLControlsMenu"
-	SubMenu "Music Choices", "SDMusic"
-	StaticText ""
-	
-	StaticText "Gameplay", "MenuActive"
+
+	SubMenu "Controls", "LLControlsMenu"
 	SubMenu "Abilities", "LLAbilitiesMenu"
+	SubMenu "Music Options", "SDMusic"
+	SubMenu "Gameplay Modifiers", "LLModsMenu"
 	SubMenu "Miscellaneous", "LLMiscOptMenu"
 	StaticText ""
 	
@@ -62,79 +57,127 @@ OptionMenu "LLAbilitiesMenu"
 {
 	Title "Abilities"
 	
-	StaticText "Configure character abilties.", "White"
-	StaticText "Toggle things like crashing into walls and Hyper forms,", "White"
-	StaticText "and change things like how far the Precision Shotgun", "White"
-	StaticText "zooms in or when the Homing Reticle appears.", "White"
-	StaticText ""
-	
-	Option "Reserved Mode", "ReservedMode", "EnabledOrNot"
-	StaticText "All characters", "Cyan"
-	StaticText "Tones down movement speed and jump height, intended", "White"
-	StaticText "for use with standard DOOM levels.", "White"
-	StaticText ""
-	
-	Option "Crash into walls when Boosting", "WallCrash", "EnabledOrNot"
-	StaticText "Sonic only", "Cyan"
-	StaticText ""
-	
-	Slider "Scope Zoom Factor", "AmyZoomFactor", 4, 8, 0.5
-	StaticText "Amy only", "Cyan"
-	StaticText ""
-	
-	Option "Hyper Sonic", "HyperSonic", "EnabledOrNot"
-	StaticText "Sonic or Classic", "Cyan"
-	StaticText ""
-	
-	Option "Homing Reticle", "HomingReticle", "HomingReticle"
-	StaticText "Sonic or Shadow", "Cyan"
+	StaticText "Customise character abilities.", "White"
+	StaticText "Toggle various abilities and adjust settings for", "White"
+	StaticText "specific characters.", "White"
 	StaticText ""
 
-    Option "Recoil Burst Activation", "RecoilBurstRelease", "RecoilBurstRelease"
-	StaticText "Sonic only", "Cyan"
+	Option "Reserved Mode", "ReservedMode", "EnabledOrNot"
+	StaticText "Tones down movement speed and jump height,", "White"
+	StaticText "suitable for standard DOOM levels.", "White"
+	StaticText ""
+
+	Option "Crash into walls when Boosting", "WallCrash", "EnabledOrNot"
+	StaticText ""
+
+	Slider "Scope Zoom Factor", "AmyZoomFactor", 4, 8, 0.5
+	StaticText "Adjust the zoom factor of Amy's Precision Shotgun scope.", "White"
+	StaticText ""
+
+	Option "Hyper Sonic", "HyperSonic", "EnabledOrNot"
+	StaticText ""
+
+	Option "Homing Reticle", "HomingReticle", "HomingReticle"
+	StaticText ""
+
+	Option "Caliburn Energy Blades", "EnergyBlades", "EnabledOrNot"
+	StaticText ""
+}
+OptionMenu "LLSpecControl"
+{
+	Title "Specific Controls"
+	
+	StaticText "Configure alternative controls.", "White"
+	StaticText "Toggle what buttons to use for certain special abilities.", "White"
 	StaticText ""
 	
+    Option "Recoil Burst", "RecoilBurstRelease", "RecoilBurstRelease"
+	StaticText "Sonic only", "Cyan"
+	StaticText "Choose between one-button or two-button activation for", "White"
+	StaticText "the Accelerated Pistol's Recoil Burst.", "White"
+	StaticText ""
+
+    Option "Homing Assault", "HomingAssaultOffhand", "HomingAssaultOffhand"
+	StaticText "Shadow only", "Cyan"
+	StaticText "Choose between using the Jump key or Offhand Attack key", "White"
+	StaticText "for Shadow's Homing Assault.", "White"
+	StaticText ""
 }
 OptionMenu "LLMiscOptMenu"
 {
 	Title "Misc. Options"
 	
-	StaticText "Configure miscellaneous options.", "White"
+	StaticText "Customise miscellaneous options.", "White"
 	StaticText "Options that don't belong in any other category are put", "White"
 	StaticText "here, like your HUD style or whether or not you have", "White"
 	StaticText "subtitles for voiced lines.", "White"
 	StaticText ""
-	
+
 	Option "HUD Type", "HUDType", "HUDType"
-	StaticText "Fullscreen HUD is unchanged.", "LightBlue"
 	StaticText ""
-	
+
 	Option "Subtitles", "Subtitles", "EnabledOrNot"
-	StaticText "All characters", "Cyan"
 	StaticText ""
-	
+
 	Option "Tutorials", "Tutorials", "EnabledOrNot"
-	StaticText "All characters", "Cyan"
 	StaticText ""
-	
+
 	Option "Control Hints", "ControlHints", "EnabledOrNot"
-	StaticText "All characters", "Cyan"
+	StaticText "Deprecated.", "Red"
 	StaticText ""
-	
+
 	Option "Low Health Warning", "LowHealthSound", "EnabledOrNot"
-	StaticText "All characters", "Cyan"
 	StaticText ""
-	
+
 	Option "Low Energy Warning", "LowEnergySound", "EnabledOrNot"
-	StaticText "All characters", "Cyan"
-	StaticText "Will play when energy is low in", "White"
-	StaticText "Super, Dark or Hyper form.", "White"
+	StaticText "Play warning when energy is low in Super, Dark, or Hyper form.", "White"
 	StaticText ""
-	
+
 	Option "HIRE THIS MAN", "HireThisMan", "EnabledOrNot"
-	StaticText "If this is turned on, there's a random chance", "White"
-	StaticText "'NINTENDO, HIRE THIS MAN!' by Chris Voiceman will", "White"
-	StaticText "replace the title screen music.", "White"
+	StaticText "Enable this option to replace the title screen music", "White"
+	StaticText "with 'NINTENDO, HIRE THIS MAN!' by Chris Voiceman.", "White"
+	StaticText ""
+}
+OptionMenu "LLModsMenu"
+{
+	Title "Modifiers"
+	
+	StaticText "Customise gameplay mechanics.", "White"
+	StaticText "Add or change gameplay mechanics for a tailored experience.", "White"
+	StaticText ""
+
+	Option "Give Energy On Damage", "GiveEnergyOnDamage", "EnabledOrNot"
+	StaticText "Dealing damage to or killing monsters will net you some", "White"
+	StaticText "Chaos Energy, which is capped at either 300 or 500 Energy", "White"
+	StaticText "depending on if the monster was only damaged or was killed.", "White"
+	StaticText ""
+
+	Option "Enemies Bleed Rings", "EnemiesBleedRings", "EnabledOrNot"
+	StaticText "Upon taking damage, enemies will drop Rings that don't last too long", "White"
+	StaticText "and you'll receive a health boost if you're close up to the enemy.", "White"
+	StaticText ""
+
+	Option "Style System", "StyleSystem", "EnabledOrNot"
+	StaticText "Continuously attack enemies to rack up Style Points and", "White"
+	StaticText "get a high Style Rank! Getting hit or just waiting will", "White"
+	StaticText "make your Style Points go down.", "White"
+	StaticText ""
+
+	Option "Spongy Enemies", "SpongyEnemies", "EnabledOrNot"
+	Slider "Spongy Multiplier", "Sponginess", 2, 100, 1
+	StaticText "Enable this modifier to have enemies with multiplied health,", "White"
+	StaticText "so you can enjoy longer fights and show off your skills!", "White"
+	StaticText ""
+
+	Option "One-Hit Mode", "OneHitMode", "EnabledOrNot"
+	StaticText "Enable this mode for a challenging experience, where", "White"
+	StaticText "any damage dealt to you instantly results in death.", "White"
+	StaticText ""
+
+	Option "Death Counter", "CountDeaths", "EnabledOrNot"
+	StaticText "Display your death count on entering a new level for", "White"
+	StaticText "an added challenge. Combine with One-Hit Mode for a", "White"
+	StaticText "metric of how you're doing on that mode!", "White"
 	StaticText ""
 }
 OptionMenu "LLControlsMenu"
@@ -143,8 +186,7 @@ OptionMenu "LLControlsMenu"
 	
 	StaticText "Configure controls.", "White"
 	StaticText "This is not an extensive list of controls, but", "White"
-	StaticText "it contains every key needed for Sonic: Lock ", "White"
-	StaticText "& Load.", "White"
+	StaticText "it contains every key needed for Sonic: Lock & Load.", "White"
 	StaticText ""
 	
 	StaticText "Movement", "MenuActive"
@@ -182,21 +224,18 @@ OptionMenu "SDMusic"
 {
 	Title "Music Options"
 	
-	StaticText "Configure music choices.", "White"
-	StaticText "Change music tracks for invincibility, Super or ", "White"
+	StaticText "Customise music choices.", "White"
+	StaticText "Change music tracks for invincibility, Super, Hyper or ", "White"
 	StaticText "Dark form, and toggle music being played upon death.", "White"
 	StaticText ""
-	
-	Option "Invincibility", "InvincMusic", "EnabledOrNotMus"
-	StaticText "All characters", "Cyan"
+
+	Option "Invincibility Music", "InvincMusic", "EnabledOrNotMus"
 	StaticText ""
-	
-	Option "Super/Dark/Hyper Form", "SuperMusic", "EnabledOrNotMus"
-	StaticText "All characters", "Cyan"
+
+	Option "Super/Dark/Hyper Form Music", "SuperMusic", "EnabledOrNotMus"
 	StaticText ""
-	
+
 	Option "Death Music", "DeathMusic", "EnabledOrNotMus"
-	StaticText "All characters", "Cyan"
 	StaticText ""
 }
 AddOptionMenu "OptionsMenu"
@@ -226,15 +265,15 @@ OptionValue "HUDType"
 	1, "Classic-Style" // Pre-Chaos Update HUD
 	2, "Legacy" // Minimal HUD, ripped from STHiD Legacy Edition
 }
-OptionValue "JumpThok"
-{
-	0, "Offhand Ability only"
-	1, "Off. Ability or Jump mid-air"
-}
 OptionValue "RecoilBurstRelease"
 {
-	0, "Press Fire while holding Alt-Fire"
+	0, "Fire while holding Alt-Fire"
 	1, "Release Alt-Fire"
+}
+OptionValue "HomingAssaultOffhand"
+{
+	0, "Jump"
+	1, "Offhand Attack"
 }
 OptionValue "HomingReticle"
 {

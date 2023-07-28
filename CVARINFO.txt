@@ -12,10 +12,20 @@ user bool Subtitles 				= true;
 user bool LowHealthSound			= true;
 user bool LowEnergySound			= true;
 user bool ReservedMode				= false;
-user bool RecoilBurstRelease        = true;
+user bool RecoilBurstRelease        = false;
+user bool HomingAssaultOffhand      = false;
 user bool HireThisMan				= true;
 user bool ControlHints				= false;
 user bool Tutorials					= true;
+user bool EnergyBlades				= true;
+
+user bool GiveEnergyOnDamage		= false;
+user bool EnemiesBleedRings			= false;
+user bool StyleSystem				= false;
+user bool SpongyEnemies				= false;
+user int  Sponginess				= 2;
+user bool OneHitMode				= false;
+user bool CountDeaths				= false;
 
 /* Temporary CVARs */
 user noarchive string LastWeapon		= "";
@@ -27,6 +37,10 @@ user noarchive bool	  CloseToEnemy		= false;
 user noarchive bool	  IsCrouching		= false;
 user noarchive bool	  CanWallJump		= false;
 user noarchive bool	  CanHoming			= false;
+user noarchive bool	  DidHoming			= false;
 user noarchive bool	  CanHammerJump		= false;
 user noarchive bool	  CanJump			= false;
 user noarchive int 	  EclipseLimiter	= 0;
+user noarchive int	  StyleRank			= 0;
+user noarchive int	  StyleScore		= 0;
+user noarchive int	  DeathCounter		= 0;

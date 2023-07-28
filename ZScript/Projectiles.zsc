@@ -5,7 +5,7 @@ class ChaosRocket : Actor
 	{
 		Radius 10;
 		Height 10;
-		Speed 20;
+		Speed 45;
 		Damage 25;
 		ExplosionDamage 100;
 		ExplosionRadius 200;
@@ -36,14 +36,14 @@ class ChaosRocket : Actor
 					// so it'll be left on in Hyper form
 				}
 				if (invoker.wasKicked) {
-					A_SeekerMissile(30, 45, SMF_LOOK, 255);
+					A_SeekerMissile(5, 10, SMF_LOOK|SMF_PRECISE, 256);
 					A_ScaleVelocity(1.15);
 				}
 				return ResolveState(null);
 			}
 			Loop;
 		Pain:
-			TNT1 A 0 {
+			MISL A 1 {
 				ACS_NamedExecute("ParryEffect");
 				invoker.bShootable = false;
 				invoker.bSeekerMissile = true;
@@ -449,6 +449,51 @@ class ChaosSpearTrail : Actor
 	}
 }
 
+class LaserProjectile : FastProjectile
+{
+	Default
+	{
+		Radius 5;
+		Height 4;
+		Speed 120;
+		Damage 40;
+		Projectile;
+		+SEEKERMISSILE
+		RenderStyle "Add";
+		DamageType "Spear";
+		BounceType "Doom";
+		Alpha 0.75;
+		ProjectileKickBack 1;
+	}
+	States
+	{
+		Spawn:
+			CSPE A 1 Bright A_SpawnItem("LaserTrail");
+			Loop;
+		Death:
+			TNT1 A 0 A_PlaySound("sweapons/spearimpact");
+		Ending:
+			CSPE A 1 Bright A_FadeOut(0.1, 0);
+			Loop;
+	}
+}
+
+class LaserTrail : Actor
+{
+	Default
+	{
+		Radius 5;
+		Height 4;
+		+NOGRAVITY;
+	}
+	States
+	{
+		Spawn:
+			CSPE A 1 Bright A_FadeOut(0.1, 0);
+			Loop;
+	}
+}
+
 class EnergyBladeLeft : FastProjectile
 {
 	Default
@@ -556,6 +601,7 @@ class WeakProjectileBullet : ProjectileBullet
 {
     Default
     {
-        Damage 1;
+        DamageFunction random(1, 3);
+		ProjectileKickBack 0;
     }
 }
