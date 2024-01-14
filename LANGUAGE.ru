@@ -161,10 +161,10 @@ DOSY = "\c[LiBlue] Спасибо, что поиграли в Sonic: Lock & Load
 
 STARTUP1 = "\c[Sonic]Добро пожаловать в Sonic: Lock & Load!";
 
-skill_text1 = "\c[Green]Здесь меньше врагов.\n\nРекомендуется, если вы новичок\nв жанре экшн.";
-skill_text2 = "\c[Yellow]Враги атакуют и двигаются медленнее.\n\nРекомендуется для тех, кто только начинает\nзнакомиться с игрой Sonic: Lock & Load.";
-skill_text3 = "\c[LiBlue]Тяжёлая сложность.\nСтандартный игровой процесс по характеристикам.\n\nРекомендуемая для игры в Sonic: Lock & Load.";
-skill_text4 = "\c[Red]Вы получаете удвоенный урон.\n\nВам придётся выложиться по полной.";
+skill_text1 = "\c[Green]Враги наносят вдвое меньше урона, чем обычно.\n\nРекомендуется, если вы новичок\nв экшен-играх.";
+skill_text2 = "\c[Yellow]Враги атакуют и двигаются медленнее,\nтак что легче избежать атак.\n\nРекомендуется для тех, кто только начинает\nзнакомиться с игрой Sonic: Lock & Load.";
+skill_text3 = "\c[LiBlue]Стандартный игровой процесс во всех отношениях.\nНебрежное отношение к игре ничем хорошим не закончится.\n\nРекомендуемая для игры в Sonic: Lock & Load.";
+skill_text4 = "\c[Red]Вы получаете вдвое больше обычного урона.\nВам придётся выложиться по полной.\n\nРекомендуется тем, кто ищет\nбольшего испытания.";
 skill_text5 = "\c[Red]Вы умираете с одного удара.\nТак же как и враги.\n\nЭто даже отдалённо не честно!";
 
 sonic		= "\c[LiBlue]Соник";
@@ -218,6 +218,7 @@ gsubtitle19		= "\c[Sonic] Соник: \c[Grey] (Просто пустой рюк
 gsubtitle20		= "\c[Amy] Эми: \c[Grey] (Какой симпатичный рюкзачок!)";
 gsubtitle21		= "\c[Classic] Соник: \c[Grey] (Ну, по крайней мере, выглядит это круто.)";
 gsubtitle22		= "\c[Classic] Соник: \c[Grey] (Бензопила? Я не могу использовать это...)";
+gsubtitle23		= "\c[Red] Докс: \c[White] Не-е-е!";
 
 staunt1			= "\c[Sonic] Соник: \c[White] Слишком медленно!";
 staunt2			= "\c[Sonic] Соник: \c[White] Ну же, сделай шаг!";
@@ -246,38 +247,92 @@ cresult3		= "\c[Classic] Соник: \c[White] Еле успел...";
 dresult1		= "\c[Shadow] Шэдоу: \c[White] Да!";
 dresult2		= "\c[Shadow] Шэдоу: \c[White] Нужно не отвлекаться.";
 
-stylerank_ss	= "Супер Соник!!!";
-stylerank_s		= "Взлёт!!";
-stylerank_a		= "Искатель приключений!";
-stylerank_b		= "Сверкающий";
-stylerank_c		= "Круиз";
 stylerank_d		= "Дрифтинг";
+stylerank_c	    = "Хаотичный";
+stylerank_b		= "Сверкающий";
+stylerank_a     = "Ускоренный";
+stylerank_s		= "Взлёт!!";
+stylerank_ss    = "Скоростное мастерство!!";
+stylerank_sss   = "Супер Соник!!!";
+stylerank_u     = "НЕПОБЕДИМЫЙ";
 
-death_msg1		= "Skill issue.";
-death_msg2		= "Wow, that was the gameplay ever.";
-death_msg3		= "To defeat the enemies, shoot at them until they die.";
-death_msg4		= "Congratulations! You die.";
-death_msg5		= "Trouble with the game, eh?";
-death_msg6		= "You are die. Thank you forever.";
-death_msg7		= "You're really good at this.";
-death_msg8s		= "Clearly you feared the fall.";						// Sonic only
-death_msg8a		= "You ran out of sweet passion.";						// Amy only
-death_msg8c		= "That's no good!";									// Classic only
-death_msg8d		= "Nice going, Mr. Ultimate Life Form.";				// Shadow only
-death_msg9		= "You high-fived the ground.";
-death_msg10		= "You are not fish.";									// Drowning
-death_msg11s	= "And you were doing so well!";						// If at 'Supersonic!!' Style Rank
-death_msg11a	= "That was really stylish up until it wasn't.";		// If at 'Adventurer!' Style Rank
-death_msg11b	= "Not bad, but not great either.";						// If at 'Blazing' Style Rank
-death_msg11cd	= "Try switching weapons from time to time!";			// If at either 'Cruising' or 'Drifting' Style Rank
-death_msg11		= "That's not very stylish of you.";					// If Style System is enabled, but at no Style Rank
-death_msg12		= "You barely even started and you're already dead.";	// If dead within the first two seconds
-death_msg13a	= "Did you just die on easy mode?";						// On first two skill levels
-death_msg13b	= "Maybe don't play on the hardest difficulty.";		// On second-to-last skill level
-death_msg13c	= "I told you it wasn't remotely fair.";				// On 'Oh No'
-death_msg14		= "Easy mode is now selectable.";
-death_msg15		= "Stop trying to rocket jump!";						// If holding Dual Assimilator
-death_msg16		= "Try again.";											// Default message
+// Random death messages
+death_rmsg1		= "Проблема в твоём навыке.";
+death_rmsg2		= "Возникли проблемы с врагами?\nПопробуйте сосредоточиться на уклонении от атак.";
+death_rmsg3		= "Чтобы победить врагов, стреляйте в них, пока они не умрут.";
+death_rmsg4		= "Поздравляем! Вы умерли.";
+death_rmsg5		= "Ах, я умираю. Спасибо вам навеки.";
+death_rmsg6s	= "Очевидно, вы боялись падения.";						// Sonic only
+death_rmsg6a	= "У тебя закончилась сладкая страсть.";						// Amy only
+death_rmsg6c	= "Так не пойдёт!";									// Classic Sonic only
+death_rmsg6d	= "Отличная работа, мистер супер-форма.";				// Shadow only
+death_rmsg7		= "Теперь можно выбрать лёгкий режим.";
+
+// Contextual death mesasges
+death_drown		= "Если вы застряли под водой,\n быстро нажмите ПРЫЖОК, чтобы всплыть.";
+death_assm		= "Перестаньте пытаться прыгать на ракете!";						// If holding Dual Assimilator
+death_fast		= "Вы едва начали, а уже мертвы.";	// If dead within the first two seconds
+death_easy		= "Вы только что умерли в лёгком режиме?";						// On first two skill levels
+death_hard		= "Может быть, не стоит играть на самой сложной сложности.";		// On second-to-last skill level
+death_ohno		= "Я же говорил вам, что это нечестно.";				// On 'Oh No'
+
+title_msg1		= "\c[LightBlue]«Ничего не начнётся, пока ты не примешь меры.\nЕсли у тебя есть время для беспокойства, беги!»\n\c[White]— Sonic the Hedgehog, Соник '06";
+title_msg2		= "Если у вас проблемы с врагами,\nнаучитесь лучше уклоняться, прежде чем атаковать.";
+title_msg3		= "У каждого персонажа есть уникальная \c[LightBlue]атака \c[White]и \c[LightBlue]способность\c[White].";
+title_msg4		= "Убедитесь, что вы привязали все свои клавиши в \c[LightBlue]«Настройки» > «Управление»\c[White].";
+title_msg5		= "Добро пожаловать в Sonic: Lock & Load!\nПосле 3 лет разработки, надеемся, игра стоила того, чтобы её ждать.";
+title_msg6		= "Воспользуйтесь клавишей \c[Gold]«Последнее использованное оружие»\c[White].\nБыстрая смена оружия - это самый быстрый способ\nатаковать, позволяющий обойти анимацию перезарядки оружия.";
+title_msg7		= "Да, это сониковский шутер от первого лица.\nНет, вы не сошли с ума.";
+title_msg8		= "\c[Green]Знали ли вы?\n\c[White]Вся причина существования этой игры\nзаключается в видеоролике Питера Кнеттера.";
+title_msg9		= "\c[LightBlue]Киберкосмическая арена \c[White]- это бесконечный режим арены.\nПолучите доступ к ней с площади после того, как подберёте оружие\nна уровнях, или даже просто прыгните в неё со своим стандартным оружием!";
+title_msg10		= "Поглядите на \c[LightBlue]«Модификаторы игры»\c[White] в меню настроек!";
+title_msg11		= "\c[Sonic]Ёж Соник \c[White]превосходит всех в быстром передвижении и бою.\n\c[Amy]Эми Роуз \c[White]имеет больше возможностей для приземления и защиты.\n\c[Classic]Классический Соник \c[White]больше ориентирован на платформинг.\n\c[Shadow]Ёж Шэдоу \c[White]делает упор на тактику.";
+title_msg12		= "Поднимите руку, если вы играли\nS:L&L в \c[Orange]SAGE 2022\c[White] или \c[Red]Christmas SAGE 2023\c[White]!";
+title_msg13		= "У меня заканчиваются идеи для подсказок к главному экрану.";
+title_msg14		= "Сделано с \c[Red]♥ \c[White]Арсаланом «Velocity» Казми!\n\c[Green]<https://that1m8head.github.io>";
+title_msg15		= "Спасибо сообществу любителей игр на ZDoom и\nСоника за помощь и\nотзывы на протяжении многих лет!";
+title_msg16		= "Не стойте на месте в бою.\nЭто приведёт к быстрому поражению.";
+title_msg17		= "Пока вы находитесь в состоянии аффекта,\nпостарайтесь не быть слишком самоуверенными. Добром это не кончится.";
+title_msg18		= "Devil May Blast. Devil May Robo Blast?\nНе, позже я придумаю метафору получше.";
+title_msg19		= "Я никогда не думал@[ao_rus], что зайду так далеко.";
+title_msg20		= "Если вы увидите это, скажите «фланк-стейк».";
+
+level_instruct  = "Этот телепорт ведёт в:";
+// level name is expected to go after level_instruct
+
+// The "funny" descriptions have a 1-in-5 chance of being used
+// instead of their more "normal" variants
+
+// Cyber Space Arena
+level0_normal   = "Сражайтесь с бесконечными волнами врагов в зоне, основанной на сетке.";
+level0_funny    = "Сражайтесь с врагами, пока вам не надоест и вы не уйдёте.";
+
+// Sunset Gardens
+level1_normal   = "Остров на окраине Южного острова.";
+level1_funny    = "Зелёный холм всё больше похож на Коричневый холм!";
+
+// Marble Madness
+level2_normal   = "Странно знакомый лабиринт боли.";
+level2_funny    = "Дом. Сделан из мрамора.";
+
+// Oceanic Fortress
+level3_normal   = "Заброшенная база Эггмана, кишащая монстрами.";
+level3_funny    = "Большое мокрое место.";
+
+// Hire This Zone
+levelh_funny1   = "Есть человек, который обладает художественным видением...";
+levelh_funny2   = "Этот человек по-прежнему является мастером своего дела!";
+
+// Entryway (DOOM II levels)
+leveld_normal   = "Сыграть в стандартные уровни DOOM II, как обычно.";
+leveld_funny    = "Вам что, не нравятся уровни Соника?";
+
+level_locked_1  = "Этот телепорт в:";
+// level name is expected to go after level_locked_1
+level_locked_2  = "закрыт.";
+level_locked_3  = "Сначала пройдите:";
+// previous level name is expected to go after level_locked_3
+level_locked_4  = "";
 
 MENU_NEWGAME 	= "Новая игра";
 MENU_ABOUT 		= "Об игре";
