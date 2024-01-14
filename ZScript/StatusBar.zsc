@@ -1,0 +1,333 @@
+class SLL_StatusBar : BaseStatusBar
+{
+	HUDFont mHUDFont;
+	HUDFont mIndexFont;
+	HUDFont mAmountFont;
+	InventoryBarState diparms;
+
+	override void Init()
+	{
+		Super.Init();
+		SetSize(0, 320, 200);
+
+		// Create the font used for the fullscreen HUD
+		Font fnt = "HUDFONT_DOOM";
+		mHUDFont = HUDFont.Create(fnt, fnt.GetCharWidth("0"), Mono_CellLeft, 1, 1);
+		fnt = "INDEXFONT_DOOM";
+		mIndexFont = HUDFont.Create(fnt, fnt.GetCharWidth("0"), Mono_CellLeft);
+		mAmountFont = HUDFont.Create("INDEXFONT");
+		diparms = InventoryBarState.Create();
+	}
+	
+	Inventory GetInventory(class<Inventory> item)
+	{
+		return CPlayer.mo.FindInventory(item);
+	}
+
+	override void Draw(int state, double TicFrac)
+	{
+		Super.Draw (state, TicFrac);
+
+		if (state == HUD_StatusBar) {
+			BeginStatusBar();
+			switch (cvar.FindCvar("HUDType").GetInt()) {
+				case 0: // Unified
+					DrawUnifiedHUD(TicFrac);
+					break;
+				case 1: // Classic-Style
+					DrawClassicStyleHUD(TicFrac);
+					break;
+				case 2: // Legacy
+					DrawLegacyEditionHUD(TicFrac);
+					break;
+			}
+		}
+		if (state == HUD_Fullscreen) {
+			BeginHUD();
+			DrawFullScreenHUD();
+		}
+	}
+	
+	protected bool ShouldDisplayScore()
+	{
+		bool score_enabled = cvar.FindCvar("ShowScore").GetBool();
+		return score_enabled;
+	}
+	
+	protected void DisplayUnifiedHUD(Vector2 hud_position)
+	{
+		String hud;
+		if (GetInventory("PowerHyper")) {
+			hud = "hyp_hud";
+		}
+		else if (GetInventory("PowerSuper")) {
+			if (GetInventory("AmyCheck")) {
+				hud = "drk_hud";
+			}
+			else {
+				hud = "sup_hud";
+			}
+		}
+		else {
+			if (GetInventory("SonicCheck")) 	{ hud = "snc_hud"; }
+			if (GetInventory("AmyCheck")) 		{ hud = "amy_hud"; }
+			if (GetInventory("ClassicCheck")) 	{ hud = "csn_hud"; }
+			if (GetInventory("ShadowCheck")) 	{ hud = "sha_hud"; }
+		}
+		if (!ShouldDisplayScore()) {
+			hud = String.Format("%st", hud);
+			hud_position.y -= 12.5;
+		}
+		DrawImage(hud, hud_position);
+	}
+	
+	protected void DrawBarKeys(int base_x, int base_y, int spacing_x, int spacing_y)
+	{
+		// Taken from DoomStatusBar and adapted because I'm lazy
+		bool locks[6];
+		String image;
+		
+		for (int i = 0; i < 6; i++) {
+			locks[i] = CPlayer.mo.CheckKeys(i + 1, false, true);
+		}
+		
+		if (locks[1] && locks[4]) image = "STKEYS6";
+		else if (locks[1]) image = "STKEYS0";
+		else if (locks[4]) image = "STKEYS3";
+		DrawImage(image, (base_x - spacing_x, base_y - spacing_y), DI_ITEM_OFFSETS);
+		
+		if (locks[2] && locks[5]) image = "STKEYS7";
+		else if (locks[2]) image = "STKEYS1";
+		else if (locks[5]) image = "STKEYS4";
+		else image = "";
+		DrawImage(image, (base_x, base_y), DI_ITEM_OFFSETS);
+		
+		if (locks[0] && locks[3]) image = "STKEYS8";
+		else if (locks[0]) image = "STKEYS2";
+		else if (locks[3]) image = "STKEYS5";
+		else image = "";
+		DrawImage(image, (base_x + spacing_x, base_y + spacing_y), DI_ITEM_OFFSETS);
+	}
+	
+	protected void DrawRings(HUDFont fnt, Vector2 rings_position, bool super_hide = false, String rings_colour = "Gold", int flags = DI_TEXT_ALIGN_RIGHT | DI_NOSHADOW)
+	{
+		bool is_transformed = GetInventory("PowerSuper") || GetInventory("PowerHyper");
+
+		if (!super_hide || !is_transformed)
+		{
+			if (CPlayer.health <= 0) {
+				rings_colour = "Red";
+			}
+			else if (CPlayer.health <= 20) {
+				if ((level.time / (35 / 7)) % 2 == 0) {
+					rings_colour = "Red";
+				}
+			}
+			DrawString(fnt, String.Format("%03d", CPlayer.health), rings_position, flags, Font.FindFontColor(rings_colour));
+		}
+	}
+
+	protected void DrawEnergy(HUDFont fnt, Vector2 energy_position, String energy_colour = "Green", int flags = DI_TEXT_ALIGN_RIGHT | DI_NOSHADOW)
+	{
+		bool is_transformed = GetInventory("PowerSuper") || GetInventory("PowerHyper");
+		int energy = GetInventory("ChaosEnergy").Amount;
+
+		if (GetInventory("PowerSuper") && cvar.FindCvar("HUDType").GetInt() != 1)
+		{
+			if (GetInventory("AmyCheck"))
+				energy_colour = "Purple";
+			else
+				energy_colour = "Gold";
+		}
+		else
+		{
+			if (GetInventory("PowerHyper"))
+				energy_colour = "White";
+			else {
+				if (energy < 1)
+					energy_colour = "Red";
+			}
+		}
+
+		DrawString(fnt, String.Format("%03d", energy), energy_position, flags, Font.FindFontColor(energy_colour));
+	}
+
+	protected int GetTimeColour(bool include_super = true)
+	{
+		Name time_colour;
+		
+		if (GetInventory("SonicCheck")) 	{ time_colour = "Sonic"; }
+		if (GetInventory("AmyCheck")) 		{ time_colour = "Amy"; }
+		if (GetInventory("ClassicCheck")) 	{ time_colour = "Classic"; }
+		if (GetInventory("ShadowCheck")) 	{ time_colour = "Shadow"; }
+		
+		if (include_super) {
+			if (GetInventory("PowerHyper")) { time_colour = "White"; }
+			if (GetInventory("PowerSuper")) {
+				time_colour = "Gold";
+				if (GetInventory("AmyCheck")) { time_colour = "Purple"; }
+			}
+		}
+		
+		return Font.FindFontColor(time_colour);
+	}
+	
+	protected String GetTimeDisplay()
+	{
+		int overall_seconds = level.time / 35;
+		int seconds = overall_seconds % 60;
+		int minutes = (overall_seconds / 60) % 60;
+		int hours = overall_seconds / 3600;
+
+		return String.Format("%02d:%02d:%02d", hours, minutes, seconds);
+	}
+	
+	protected String GetClassicTimeDisplay()
+	{
+		int overall_seconds = level.time / 35;
+		int milliseconds = (level.time % 35) * (1000 / 35) / 10;
+		int seconds = overall_seconds % 60;
+		int minutes = (overall_seconds / 60) % 60;
+
+		return String.Format("%02d'%02d''%02d", minutes, seconds, milliseconds);
+	}
+
+	protected void DisplayHead(Vector2 head_position, bool show_emeralds = false)
+	{
+		Vector2 emeralds_position = (head_position.x + 20, head_position.y + 57);
+		
+		if (GetInventory("ChaosEmeralds") && show_emeralds) 
+			DrawImage("em_back", emeralds_position, DI_ITEM_OFFSETS);
+			
+		DrawTexture(GetMugShot(1), head_position, DI_ITEM_OFFSETS);
+		
+		if (GetInventory("ChaosEmeralds") && show_emeralds)
+			DrawImage("em_front", emeralds_position, DI_ITEM_OFFSETS);
+	}
+	
+	protected void DisplayLabels(Vector2 position, HUDFont fnt)
+	{
+		if (cvar.FindCvar("ShowScore").GetBool()) {
+			DrawString(fnt, "Score", position, 0, Font.FindFontColor("Fire"));
+			position.y += 18;
+		}
+		DrawString(fnt, "Time", position, 0, GetTimeColour(false));
+		position.y += 18;
+		DrawString(fnt, "Rings", position, 0, Font.FindFontColor("Gold"));
+		position.y += 18;
+		DrawString(fnt, "Energy", position, 0, Font.FindFontColor("Green"));
+	}
+	
+	protected void DrawScore(HUDFont fnt, Vector2 position, int score_colour, int flags = DI_TEXT_ALIGN_RIGHT)
+	{
+		/* Target score */
+		int targetscore;
+		let skill_level = G_SkillPropertyInt(SKILLP_ACSReturn);
+		targetscore = CallACS("GetLevelTargetScore");
+		
+		/* Current score */
+		int score;
+		if (CPlayer.health > 300) {
+			score += 600 + (CPlayer.health - 300);
+		}
+		else {
+			score += CPlayer.health * 2;
+		}
+		score += Level.Killed_Monsters * 95;
+		if (score < 0) score = 0;
+		
+		/* If in Cyber Space Arena, use killed monsters as score */
+		if (level.LevelName == "Cyber Space Arena") {
+			score = Level.Killed_Monsters;
+		}
+		
+		/* Gold if requirements met */
+		bool in_allowed_level = level.LevelName != "Station Square" && level.LevelName != "Cyber Space Arena";
+		if (score >= targetscore && in_allowed_level) {
+			if (GetInventory("PowerSuper")) score_colour = Font.FindFontColor("Yellow");
+			else score_colour = Font.FindFontColor("Gold");
+		}
+		
+		/* Display it */
+		DrawString(fnt, String.Format("%d", score), position, flags, score_colour);
+	}
+
+	protected void DrawUnifiedHUD(double TicFrac)
+	{
+		HUDFont fnt = HUDFont.Create("BIGFONT");
+		DisplayUnifiedHUD((36, 175));
+		DisplayHead((-46, 117), true);
+		DrawBarKeys(120, 130, -3, 10);
+		Vector2 rings_position = (21, 126);
+		Vector2 energy_position = (82, 126);
+		if (GetInventory("PowerSuper") || GetInventory("PowerHyper")) {
+			energy_position.x = rings_position.x;
+		}
+		DrawRings(fnt, rings_position, true, "Gold", DI_TEXT_ALIGN_CENTER|DI_NOSHADOW);
+		DrawEnergy(fnt, energy_position, "Green", DI_TEXT_ALIGN_CENTER|DI_NOSHADOW);
+		DrawString(fnt, GetTimeDisplay(), (48, 150), 0, GetTimeColour());
+		if (ShouldDisplayScore()) {
+			DrawScore(fnt, (48, 165), GetTimeColour(), DI_TEXT_ALIGN_LEFT);
+		}
+	}
+
+	protected void DrawClassicStyleHUD(double TicFrac)
+	{
+		HUDFont fnt = HUDFont.Create("BIGFONT");
+		int base_x = -130;
+		int base_y = -60;
+		int gap = 175;
+		DisplayLabels((base_x, base_y), fnt);
+		if (ShouldDisplayScore()) {
+			base_y += 18;
+			DrawScore(fnt, (base_x + gap, base_y - 18), Font.FindFontColor("White"));
+		}
+		DrawString(fnt, GetClassicTimeDisplay(), (base_x + gap, base_y), DI_TEXT_ALIGN_RIGHT|DI_NOSHADOW, Font.FindFontColor("White"));
+		DrawRings(fnt, (base_x + gap, base_y + 18), false, "White");
+		DrawEnergy(fnt, (base_x + gap, base_y + 36), "White");
+		DisplayHead((base_x, 143));
+		DrawBarKeys(65, base_y + 20, 0, 18);
+	}
+
+	protected void DrawLegacyEditionHUD(double TicFrac)
+	{
+		int base_x = 145;
+		int base_y = 180;
+		int label_y = base_y + 11;
+		DisplayHead((base_x, base_y - 15));
+		DrawBarKeys(240, 182, 0, 8);
+		if (GetInventory("ChaosEmeralds")) {
+			DrawImage("em_smol", (56, base_y + 15));
+		}
+		DrawRings(HUDFont.Create("HUDFONT_DOOM"), (base_x - 10, base_y - 6));
+		DrawEnergy(HUDFont.Create("HUDFONT_DOOM"), (base_x + 85, base_y - 6));
+		DrawString(HUDFont.Create("SMALLFONT"), "RINGS", (base_x - 30, label_y), DI_TEXT_ALIGN_CENTER, Font.FindFontColor("Gold"));
+		string energy_colour = "Green";
+		string energy_text	 = "ENERGY";
+		if (GetInventory("PowerSuper")) {
+			energy_colour = "Gold";
+			energy_text   = "SUPER";
+		}
+		DrawString(HUDFont.Create("SMALLFONT"), energy_text, (base_x + 65, label_y), DI_TEXT_ALIGN_CENTER, Font.FindFontColor(energy_colour));
+		if (ShouldDisplayScore()) {
+			DrawScore(HUDFont.Create("HUDFONT_DOOM"), (base_x + 137, base_y - 6), GetTimeColour(), DI_TEXT_ALIGN_CENTER);
+			DrawString(HUDFont.Create("SMALLFONT"), "SCORE", (base_x + 137, label_y), DI_TEXT_ALIGN_CENTER, GetTimeColour());
+		}
+	}
+
+	protected void DrawFullScreenHUD()
+	{
+		HUDFont fnt = HUDFont.Create("HUDFONT_DOOM");
+		DisplayHead((3, -35));
+		DrawString(HUDFont.Create("BIGFONT"), GetTimeDisplay(), (-10, 2), DI_TEXT_ALIGN_RIGHT, GetTimeColour());
+		if (GetInventory("ChaosEmeralds")) {
+			DrawImage("em_smol", (-95, -4));
+		}
+		DrawBarKeys(-60, -17, 0, 8);
+		DrawRings(fnt, (79, -22), true);
+		DrawEnergy(fnt, (-5, -22));
+		if (ShouldDisplayScore()) {
+			DrawScore(HUDFont.Create("BIGFONT"), (-10, 18), GetTimeColour(false));
+		}
+	}
+}

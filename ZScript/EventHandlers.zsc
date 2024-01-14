@@ -1,6 +1,6 @@
 class DeathInfo : Object {
-    Actor actor;
-    int tick;
+	Actor actor;
+	int tick;
 }
 
 class RemoveCyberSpaceArenaCorpses : EventHandler
@@ -8,28 +8,28 @@ class RemoveCyberSpaceArenaCorpses : EventHandler
 	Array<DeathInfo> dead_monsters;
 	int current_tick;
 	int delay;
-	
-	override void WorldThingDied(WorldEvent e)
-    {
-        if (e.thing && e.thing.bIsMonster && level.mapname == "SDCYBRSP") {
-			DeathInfo info = new("DeathInfo");
-            info.actor = e.thing;
-            info.tick = current_tick;
-            dead_monsters.Push(info);
-		}
-    }
 
-    override void WorldTick () {
-        current_tick++;
+	override void WorldThingDied(WorldEvent e)
+	{
+		if (e.thing && e.thing.bIsMonster && level.mapname == "SDCYBRSP") {
+			DeathInfo info = new("DeathInfo");
+			info.actor = e.thing;
+			info.tick = current_tick;
+			dead_monsters.Push(info);
+		}
+	}
+
+	override void WorldTick () {
+		current_tick++;
 		delay = 60;
 		for (int i = 0; i < dead_monsters.Size(); i++) {
-            if (current_tick - dead_monsters[i].tick >= delay) {
-                dead_monsters[i].actor.Destroy();
-                dead_monsters.Delete(i);
-                i--;
-            }
-        }
-    }
+			if (current_tick - dead_monsters[i].tick >= delay) {
+				dead_monsters[i].actor.Destroy();
+				dead_monsters.Delete(i);
+				i--;
+			}
+		}
+	}
 }
 
 class GiveEnergyOnDamage : EventHandler
@@ -42,10 +42,10 @@ class GiveEnergyOnDamage : EventHandler
 			recipient.A_GiveInventory("ChaosEnergy", energy);
 		}
 	}
-	
+
 	override void WorldThingDamaged(WorldEvent e)
-    {
-        if (e.thing && e.thing.bIsMonster && Cvar.FindCvar("GiveEnergyOnDamage").GetBool()) {
+	{
+		if (e.thing && e.thing.bIsMonster && Cvar.FindCvar("GiveEnergyOnDamage").GetBool()) {
 			int energy_to_give, min_energy, max_energy;
 			if (e.damage > e.thing.health) {
 				energy_to_give = e.damage / 16;
@@ -62,21 +62,18 @@ class GiveEnergyOnDamage : EventHandler
 			}
 			GiveEnergy(e.damagesource, energy_to_give, max_energy);
 		}
-    }
+	}
 }
 
 class EnemiesBleedRings : EventHandler
 {
 	override void WorldThingDamaged(WorldEvent e)
-    {
-        if (e.thing && e.thing.bIsMonster && Cvar.FindCvar("EnemiesBleedRings").GetBool()) {
+	{
+		if (e.thing && e.thing.bIsMonster && Cvar.FindCvar("EnemiesBleedRings").GetBool()) {
 			int ringcount = e.damage / 64;
-			if (ringcount < 1) ringcount = 1;
+			ringcount = clamp(ringcount, 1, 300);
 			int maxrange  = e.damage / 48;
-			if (maxrange < 2) {
-				maxrange = 2;
-			}
-			if (e.damage > e.thing.health) ringcount = e.damage / 16;
+			maxrange = clamp(maxrange, 2, 20);
 			for (int x = 1; x <= ringcount; x++) {
 				int x = random(maxrange * -1, maxrange);
 				int y = random(maxrange * -1, maxrange);
@@ -95,255 +92,305 @@ class EnemiesBleedRings : EventHandler
 				}
 			}
 		}
-    }
+	}
 }
 
 class StyleSystem : EventHandler
 {
 	int score;
-	int current_tick;
-    string current_weapon;
-    int consecutive_uses;
-	
+	int deprecation_tick;
+	int reward_tick;
+	string current_weapon;
+	int consecutive_uses;
+
 	override void WorldThingDamaged(WorldEvent e)
-    {
-		if (!cvar.FindCvar("StyleSystem").GetBool()) return;
+	{
+		bool is_attackable_target = e.thing.bIsMonster || e.thing.GetClassName() == "Doox";
+
+		if (!cvar.FindCvar("StyleSystem").GetBool())
+			return;
+
 		if (e.thing && e.thing is "PlayerPawn") {
 			DeductStyleScore(e);
 		}
-        else if (e.thing && e.thing.bIsMonster && !(e.damagesource && e.damagesource.bIsMonster) && !(e.inflictor && e.inflictor.bIsMonster)) {
+
+		else if (e.thing && is_attackable_target && !(e.damagesource && e.damagesource.bIsMonster) && !(e.inflictor && e.inflictor.bIsMonster)) {
 			UpdateStyleScore(e);
 		}
-    }
-	
+	}
+
 	override void WorldTick()
 	{
-		if (!cvar.FindCvar("StyleSystem").GetBool()) return;
+		if (!cvar.FindCvar("StyleSystem").GetBool())
+			return;
+
 		UpdateStyleRank();
 		UpdateWeapon();
 		DeprecateStyleScore();
 	}
-	
+
 	private void UpdateStyleScore(WorldEvent e)
 	{
 		/* Player object */
 		PlayerPawn player = players[consoleplayer].mo;
-		
+
 		/* Consecutive uses */
 		let ReadyWeapon = player.player.ReadyWeapon;
 		let PlayerIsResponsible = e.damagesource && e.damagesource is "PlayerPawn";
 		if (ReadyWeapon && ReadyWeapon.GetClassName() == current_weapon && PlayerIsResponsible) {
 			consecutive_uses++;
 		}
-		
+
 		/* Initialisation */
 		int stylerank = cvar.FindCvar("StyleRank").GetInt();
 		int scorebonus;
-		
+
 		/* Dealing damage */
 		if (PlayerIsResponsible) {
-			scorebonus += e.damage * 48;
+			scorebonus += e.damage * 73;
 		}
 		else {
-			scorebonus += e.damage * 24;
+			if (stylerank >= 1) {
+				scorebonus += e.damage * 12;
+			}
+			else {
+				return;
+			}
 		}
-		
+
 		/* Using different weapon */
-		if (player.player.ReadyWeapon.GetClassName() != current_weapon) {
+		if (ReadyWeapon.GetClassName() != current_weapon) {
 			scorebonus *= 2;
 		}
-		
+
 		/* Height bonus */
 		if (!player.player.onground) {
-			double heightbonus = player.Pos.Z - player.GetZAt();
-			heightbonus /= 172;
-			if (heightbonus < 1) heightbonus = 1;
-			if (heightbonus > 3) heightbonus = 3;
-			scorebonus *= heightbonus;
+			scorebonus *= 1.3;
 		}
-		
-		/* Velocity bonus */
-		double total_vel = sqrt(player.vel.x ** 2 + player.vel.y ** 2);
-		double velocitybonus = total_vel / 256;
-		if (velocitybonus < 1) velocitybonus = 1;
-		if (velocitybonus > 3) velocitybonus = 3;
-		scorebonus *= velocitybonus;
-		
+
+		/* Enemy mid-air bonus */
+		if (e.thing.Pos.Z > e.thing.GetZAt()) {
+			scorebonus *= 2;
+		}
+
+		/* Add case for Offhand Attack */
+		bool offhand_attack_used = e.DamageType == "SonicKick" ||
+								   e.DamageType == "ShadowMelee" ||
+								   e.DamageType == "Piko" ||
+								   e.DamageType == "SonicPunch";
+
+		/* Add case for shotguns */
+		bool shotgun_used = current_weapon == "KineticShotty" ||
+							current_weapon == "PrecisionShotgun" ||
+							current_weapon == "SpeedyShotgun" ||
+							current_weapon == "DarkAssault" ||
+							current_weapon == "QuadShotty";
+
+		/* Clamp score bonus */
+		int minimum_score = 750 + GetScoreBonusCap() / 100;
+		int maximum_score = GetScoreBonusCap();
+		scorebonus = clamp(scorebonus, minimum_score, maximum_score);
+
+		/* Limit score bonus if attack was Spin Dash or Boost */
+		if (e.damagetype == "SpinDash" || e.DamageType == "Boost") {
+			scorebonus /= 8;
+		}
+
 		/* Calculate staleness */
-		int staleness = 48 * consecutive_uses;
-		if (staleness < 0) staleness = 0;
-		if (staleness > scorebonus) staleness = scorebonus;
-		
-		/* Limit staleness */
-		int remaining_weapons = (6 - GetAmountOfWeapons()) + 1;
-		staleness /= remaining_weapons;
-		
-		/* Apply staleness */
-		scorebonus -= staleness;
-		
+		int staleness_factor = 224;
+		if (shotgun_used) staleness_factor = 96;
+		int staleness = staleness_factor * consecutive_uses;
+		staleness = clamp(staleness, 0, scorebonus);
+
+		// Apply staleness, unless an Offhand Attack was used
+		if (!offhand_attack_used) {
+			scorebonus -= staleness;
+		}
+
 		/* Total up and cap score */
 		score += scorebonus;
-		if (score > 500000) score = 500000;
-		
+		if (score > 300000) score = 300000;
+
 		/* It isn't here, but the player can also gain Style
 		   Points by parrying attacks.
-		
+
 		   Go and see Sonic.zsc and Amy.zsc for that code. */
 	}
-	
-	private int GetAmountOfWeapons()
-	{
-		PlayerPawn player = players[consoleplayer].mo;
-		
-		/* We can assume the player has Slot 1 and Slot 2
-		   weapons, since they're given at the start.
-		   
-		   Also, I hate that I have to resort to this. */
-		   
-		bool slot3 = player.CountInv("KineticShotty") || 
-		             player.CountInv("PrecisionShotgun") || 
-					 player.CountInv("SpeedyShotgun") ||
-					 player.CountInv("DarkAssault");
-					 
-		bool slot4 = player.CountInv("ShurikenCrossbow") || 
-		             player.CountInv("RailshotCannon") || 
-					 player.CountInv("ChaosRain") ||
-					 player.CountInv("QuadShotty");
-					 
-		bool slot5 = player.CountInv("EclipseBlaster") || 
-		             player.CountInv("AmyEclipseBlaster") || 
-					 player.CountInv("ClassicRocketStream") ||
-					 player.CountInv("ChaosEmerald");
-					 
-		bool slot6 = player.CountInv("AirStrikeLauncher") || 
-		             player.CountInv("RapidMissiles") || 
-					 player.CountInv("DualRockets");
-					 
-		return 2 + slot3 + slot4 + slot5 + slot6;
-	}
-	
+
 	private void DeductStyleScore(WorldEvent e)
 	{
-		/* Init variable and get style rank */
 		int penalty;
 		int stylerank = cvar.FindCvar("StyleRank").GetInt();
 		switch (stylerank) {
-			case 0: // Empty
+			case 0: // E
 				penalty = 0;
 				break;
-			case 1: // Drifting
-				penalty = 64;
+			case 1: // D
+				penalty = 5000;
 				break;
-			case 2: // Cruising
-				penalty = 128;
+			case 2: // C
+				penalty = 5000;
 				break;
-			case 3: // Blazing
-				penalty = 256;
+			case 3: // B
+				penalty = 15000;
 				break;
-			case 4: // Adventurer!
-				penalty = 1048;
+			case 4: // A
+				penalty = 30000;
 				break;
-			case 5: // Skyrocketing!!
-				penalty = 2096;
+			case 5: // S
+				penalty = 40000;
 				break;
-			case 6: // Super Sonic!!!
-				penalty = 2192;
+			case 6: // SS
+				penalty = 50000;
 				break;
-		}
-		penalty += e.damage / 4 * score / 16;
-		if (penalty < 1) {
-			score = 0;
-			return;
+			case 7: // SSS
+				penalty = 60000;
+				break;
+			case 8: // U
+                penalty = 70000;
+                break;
 		}
 		score -= penalty;
 	}
-	
+
+	private int GetScoreBonusCap()
+	{
+		PlayerPawn player = players[consoleplayer].mo;
+		int stylerank = cvar.FindCvar("StyleRank").GetInt();
+		int cap;
+		switch (stylerank) {
+			case 0: // E
+			case 1: // D
+			case 2: // C
+				cap = 15000;
+				break;
+			case 3: // B
+			case 4: // A
+				cap = 10000;
+				break;
+			case 5: // S
+			case 6: // SS
+			case 7: // SSS
+			case 8: // U
+				cap = 5000;
+				break;
+		}
+
+		return cap;
+	}
+
 	private void DeprecateStyleScore()
 	{
 		PlayerPawn player = players[consoleplayer].mo;
 		int stylerank = cvar.FindCvar("StyleRank").GetInt();
 		int deprecation;
 		switch (stylerank) {
-			case 0:
-			case 1:
+			case 0: // E
+			case 1: // D
+				deprecation = 32;
+				break;
+			case 2: // C
+			case 3: // B
 				deprecation = 128;
 				break;
-			case 2:
+			case 4: // A
+			case 5: // S
+				deprecation = 256;
+				break;
+			case 6: // SS
+			case 7: // SSS
+			case 8: // U
 				deprecation = 512;
 				break;
-			case 3:
-				deprecation = 1024;
-				break;
-			case 4:
-				deprecation = 2048;
-				break;
-			case 5:
-				deprecation = 4096;
-				break;
-			case 6:
-				deprecation = 4128;
-				break;
 		}
-		
-		int total_vel = sqrt(player.vel.x ** 2 + player.vel.y ** 2);
-		
-		/* Calculate based on velocity */
-		if (total_vel >= 100.0) {
-			deprecation /= 8;
-		}
-		else if (total_vel >= 50.0) {
-			deprecation /= 6;
-		}
-		else if (total_vel >= 33.0) {
-			deprecation /= 4;
-		}
-		
+
 		/* Super and Hyper forms are invincible,
 		   so this is to balance it out */
 		if (player.CountInv("PowerSuper") || player.CountInv("PowerHyper")) {
 			deprecation *= 1.5;
 		}
-		
+
 		/* Deducting score */
-		if (current_tick > 2) {
-			current_tick = 0;
+		if (deprecation_tick > 2) {
+			deprecation_tick = 0;
 			score -= deprecation;
 		}
 	}
-	
+
 	private void UpdateStyleRank()
 	{
 		PlayerPawn player = players[consoleplayer].mo;
 		if (score < 0 || player.health <= 0) score = 0;
 		cvar.FindCvar("StyleScore").SetInt(score);
-		
-		// Used above, for deprecation delay
-		current_tick++;
-		
+
+		deprecation_tick++;
+		reward_tick++;
+
 		// Set your Style Rank
-		if 		(score >= 200000) cvar.FindCvar("StyleRank").SetInt(6); // Super Sonic!!!
-		else if (score >= 135000) cvar.FindCvar("StyleRank").SetInt(5); // Skyrocketing!!
-		else if (score >= 90000)  cvar.FindCvar("StyleRank").SetInt(4); // Adventurer!
-		else if (score >= 45000)  cvar.FindCvar("StyleRank").SetInt(3); // Blazing
-		else if (score >= 15000)  cvar.FindCvar("StyleRank").SetInt(2); // Cruising
-		else if (score >= 500)	  cvar.FindCvar("StyleRank").SetInt(1); // Drifting
-		else 					  cvar.FindCvar("StyleRank").SetInt(0); // Empty
-		
+		if 		(score >= 280000) cvar.FindCvar("StyleRank").SetInt(8); // U
+		else if	(score >= 210000) cvar.FindCvar("StyleRank").SetInt(7); // SSS
+		else if (score >= 150000) cvar.FindCvar("StyleRank").SetInt(6); // SS
+		else if (score >= 100000) cvar.FindCvar("StyleRank").SetInt(5); // S
+		else if (score >= 60000)  cvar.FindCvar("StyleRank").SetInt(4); // A
+		else if (score >= 30000)  cvar.FindCvar("StyleRank").SetInt(3); // B
+		else if (score >= 15000)  cvar.FindCvar("StyleRank").SetInt(2); // C
+		else if (score >= 10000)  cvar.FindCvar("StyleRank").SetInt(1); // D
+		else 					  cvar.FindCvar("StyleRank").SetInt(0); // E
+
 		// Obtain Style Rank to sync up
 		int style_rank = cvar.FindCvar("StyleRank").GetInt();
-		
-		bool transformed = player.CountInv("PowerSuper") || player.CountInv("PowerHyper");
-		
-		// Style Bonuses
-		if (style_rank >= 3 && !transformed) {
-			player.A_GiveInventory("ChaosEnergy", style_rank - 3);
+
+		if (style_rank >= 3) {
+			GiveStyleRewards(player, style_rank);
 		}
 	}
-	
+
+	private void GiveStyleRewards(Actor player, int style_rank)
+	{
+		bool is_transformed = player.CountInv("PowerSuper") || player.CountInv("PowerHyper");
+		bool rewards_enabled = cvar.FindCvar("StyleBonuses").GetBool();
+
+		if (is_transformed && rewards_enabled) {
+			return;
+		}
+
+		int delay;
+        int multiplier;
+
+		switch (style_rank) {
+			case 8:
+			case 7:
+				delay = 1;
+                multiplier = 2;
+				break;
+			case 6:
+				delay = 1;
+                multiplier = 1;
+				break;
+			case 5:
+				delay = 2;
+                multiplier = 2;
+				break;
+			case 4:
+				delay = 2;
+                multiplier = 1;
+				break;
+			case 3:
+			default:
+				delay = 3;
+                multiplier = 1;
+				break;
+		}
+
+		if (reward_tick % delay == 0) {
+			player.A_GiveInventory("ChaosEnergy", multiplier);
+		}
+	}
+
 	private void UpdateWeapon()
 	{
 		PlayerPawn player = players[consoleplayer].mo;
-		
+
 		/* If the player's weapon has previously been
 		   switched, reset the amount of consecutive
 		   uses and reset their current weapon. */
@@ -357,12 +404,12 @@ class StyleSystem : EventHandler
 class SpongyEnemies : EventHandler
 {
 	override void WorldThingSpawned(WorldEvent e)
-    {
-        if (e.thing && e.thing.bIsMonster && Cvar.FindCvar("SpongyEnemies").GetBool()) {
+	{
+		if (e.thing && e.thing.bIsMonster && Cvar.FindCvar("SpongyEnemies").GetBool()) {
 			e.thing.health *= cvar.FindCvar("Sponginess").GetInt();
 			// It really is that fricking simple! :D
 		}
-    }
+	}
 }
 
 class DeathCounter : StaticEventHandler
@@ -379,6 +426,104 @@ class DeathCounter : StaticEventHandler
 		int counter = cvar.FindCvar("DeathCounter").GetInt();
 		if (cvar.FindCvar("CountDeaths").GetBool()) {
 			cvar.FindCvar("DeathCounter").SetInt(counter + 1);
+		}
+	}
+}
+
+class LastWeaponHandler : StaticEventHandler
+{
+	string last_weapon;
+	string current_weapon;
+
+	override void NetworkProcess(ConsoleEvent e)
+	{
+		if (e.Name == "quickswap") {
+			SwitchWeapon();
+		}
+	}
+
+	string GetDefaultWeapon()
+	{
+		PlayerPawn player = players[consoleplayer].mo;
+
+		// Can't really use switch-case here, since we're working with strings
+
+		// We can assume that the player just spawned in, so their weapons are
+		// easy enough to guess
+
+		if (player is "SonicPlayer") {
+			return "Caliburn";
+		}
+
+		if (player is "AmyPlayer") {
+			return "SilentRosePistol";
+		}
+
+		if (player is "ClassicSonicPlayer") {
+			return "ChaosBlaster";
+		}
+
+		if (player is "ShadowPlayer") {
+			return "HighShovel";
+		}
+
+		return "";
+	}
+
+	string GetWeapon()
+	{
+		PlayerPawn player = players[consoleplayer].mo;
+
+		if (player.player.ReadyWeapon == null) {
+			return "";
+		}
+
+		return player.player.ReadyWeapon.GetClassName();
+	}
+
+	override void WorldTick()
+	{
+		PlayerPawn player = players[consoleplayer].mo;
+
+		if (player.player.ReadyWeapon == null) {
+			return;
+		}
+
+		if (current_weapon != GetWeapon()) {
+			last_weapon = current_weapon;
+		}
+
+		if (last_weapon == "") {
+			last_weapon = GetDefaultWeapon();
+		}
+
+		current_weapon = GetWeapon();
+	}
+
+	void SwitchWeapon()
+	{
+		PlayerPawn player = players[consoleplayer].mo;
+
+		if (!player.CountInv(last_weapon)) {
+			last_weapon = GetDefaultWeapon();
+		}
+
+		player.A_SelectWeapon(last_weapon);
+	}
+}
+
+class CheckpointRemovalHandler : EventHandler
+{
+	override void WorldThingSpawned(WorldEvent e)
+	{
+		bool checkpoints_disabled = !cvar.FindCvar("CheckpointsEnabled").GetBool();
+		bool permadeath_enabled = cvar.FindCvar("PermadeathMode").GetBool();
+		bool is_checkpoint = e.thing.GetClassName() == "sp_SaveDisk";
+
+		bool checkpoints_should_spawn = checkpoints_disabled || permadeath_enabled;
+
+		if (checkpoints_should_spawn && is_checkpoint) {
+			e.thing.Destroy();
 		}
 	}
 }

@@ -1,12 +1,31 @@
-version "4.10.0"
 /*
-This ZScript file doesn't have anything in it except includes.
+Copyright (c) 2020-2023 Arsalan "Velocity" Kazmi <sonicspeed848@gmail.com>
+
+This file is part of Sonic: Lock & Load.
+
+Sonic: Lock & Load is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your option) any
+later version.
+
+Sonic: Lock & Load is distributed in the hope that it will be useful (and fun),
+but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+more details.
+
+You should have received a copy of the GNU General Public License along with
+Sonic: Lock & Load. If not, see <https://www.gnu.org/licenses/>.
 */
+
+version "4.10.0"
+
+/* This ZScript file doesn't have anything in it except includes. */
+
 #include "zscript/ammo.zsc"
 #include "zscript/base.zsc"
 #include "zscript/dummyinv.zsc"
 #include "zscript/enemies.zsc"
-#include "zscript/eventhandlers.zsc"
+#include "zscript/eventhandlers.zsc" 
 #include "zscript/miscellaneous.zsc"
 #include "zscript/pickups.zsc"
 #include "zscript/powerups.zsc"
@@ -17,3 +36,7 @@ This ZScript file doesn't have anything in it except includes.
 #include "zscript/player/amy.zsc"
 #include "zscript/player/shadow.zsc"
 #include "zscript/player/classicsonic.zsc"
+#include "zscript/statusbar.zsc"
+
+/* https://github.com/mmaulwurff/main-menu-tips/ */
+#include "zscript/libraries/tp_tips.zsc"

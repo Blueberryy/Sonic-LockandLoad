@@ -161,10 +161,10 @@ DOSY = "\c[LiBlue] Thanks for playing Sonic: Lock & Load!\nAre you sure you want
 
 STARTUP1 = "\c[Sonic]Welcome to Sonic: Lock & Load!";
 
-skill_text1 = "\c[Green]There are less enemies around.\n\nRecommended if you're new\nto action games.";
-skill_text2 = "\c[Yellow]Enemies attack and move slower.\n\nRecommended for people new\nto Sonic: Lock & Load.";
-skill_text3 = "\c[LiBlue]Hard difficulty.\nStandard gameplay across the board.\n\nThe recommended Sonic: Lock & Load experience.";
-skill_text4 = "\c[Red]You take twice the usual damage.\n\nYou'd best bring your best.";
+skill_text1 = "\c[Green]Enemies deal half the damage they normally would.\n\nRecommended if you're new\nto action games.";
+skill_text2 = "\c[Yellow]Enemies attack and move slower,\nso it's easier to avoid attacks.\n\nRecommended for people new\nto Sonic: Lock & Load.";
+skill_text3 = "\c[LiBlue]Standard gameplay across the board.\nGetting careless won't end well.\n\nThe recommended Sonic: Lock & Load experience.";
+skill_text4 = "\c[Red]You take twice the usual damage.\nYou'd best bring your best.\n\nRecommended for those seeking\nmore of a challenge.";
 skill_text5 = "\c[Red]You die in one hit.\nSo do the enemies.\n\nThis isn't even remotely fair!";
 
 sonic		= "\c[LiBlue]Sonic";
@@ -218,6 +218,7 @@ gsubtitle19		= "\c[Sonic] Sonic: \c[Grey] (Just an empty backpack.)";
 gsubtitle20		= "\c[Amy] Amy: \c[Grey] (What a pretty backpack!)";
 gsubtitle21		= "\c[Classic] Sonic: \c[Grey] (Oh, well, at least it looks cool.)";
 gsubtitle22		= "\c[Classic] Sonic: \c[Grey] (Chainsaw, huh? I can't use this...)";
+gsubtitle23		= "\c[Red] Doox: \c[White] Nyeeh!";
 
 staunt1			= "\c[Sonic] Sonic: \c[White] You're too slow!";
 staunt2			= "\c[Sonic] Sonic: \c[White] Come on, step it up!";
@@ -246,38 +247,92 @@ cresult3		= "\c[Classic] Sonic: \c[White] Barely made it...";
 dresult1		= "\c[Shadow] Shadow: \c[White] Yes!";
 dresult2		= "\c[Shadow] Shadow: \c[White] Need to stay focused.";
 
-stylerank_ss	= "Super Sonic!!!";
-stylerank_s		= "Skyrocketing!!";
-stylerank_a		= "Adventurer!";
-stylerank_b		= "Blazing";
-stylerank_c		= "Cruising";
-stylerank_d		= "Drifting";
+stylerank_d	    = "Drifting";
+stylerank_c	    = "Chaotic";
+stylerank_b	    = "Blazing";
+stylerank_a     = "Accelerated";
+stylerank_s     = "Skyrocketing!";
+stylerank_ss    = "Speedy Skills!!";
+stylerank_sss   = "Super Sonic Style!!!";
+stylerank_u     = "UNDEFEATABLE";
 
-death_msg1		= "Skill issue.";
-death_msg2		= "Wow, that was the gameplay ever.";
-death_msg3		= "To defeat the enemies, shoot at them until they die.";
-death_msg4		= "Congratulations! You die.";
-death_msg5		= "Trouble with the game, eh?";
-death_msg6		= "You are die. Thank you forever.";
-death_msg7		= "You're really good at this.";
-death_msg8s		= "Clearly you feared the fall.";						// Sonic only
-death_msg8a		= "You ran out of sweet passion.";						// Amy only
-death_msg8c		= "That's no good!";									// Classic only
-death_msg8d		= "Nice going, Mr. Ultimate Life Form.";				// Shadow only
-death_msg9		= "You high-fived the ground.";
-death_msg10		= "You are not fish.";									// Drowning
-death_msg11s	= "And you were doing so well!";						// If at 'Supersonic!!' Style Rank
-death_msg11a	= "That was really stylish up until it wasn't.";		// If at 'Adventurer!' Style Rank
-death_msg11b	= "Not bad, but not great either.";						// If at 'Blazing' Style Rank
-death_msg11cd	= "Try switching weapons from time to time!";			// If at either 'Cruising' or 'Drifting' Style Rank
-death_msg11		= "That's not very stylish of you.";					// If Style System is enabled, but at no Style Rank
-death_msg12		= "You barely even started and you're already dead.";	// If dead within the first two seconds
-death_msg13a	= "Did you just die on easy mode?";						// On first two skill levels
-death_msg13b	= "Maybe don't play on the hardest difficulty.";		// On second-to-last skill level
-death_msg13c	= "I told you it wasn't remotely fair.";				// On 'Oh No'
-death_msg14		= "Easy mode is now selectable.";
-death_msg15		= "Stop trying to rocket jump!";						// If holding Dual Assimilator
-death_msg16		= "Try again.";											// Default message
+// Random death messages
+death_rmsg1		= "Skill issue.";
+death_rmsg2		= "Having trouble with enemies?\nTry focusing on evading attacks.";
+death_rmsg3		= "To defeat the enemies, shoot at them until they die.";
+death_rmsg4		= "Congratulations! You die.";
+death_rmsg5		= "Ah, I'm die. Thank you forever.";
+death_rmsg6s	= "Clearly you feared the fall.";						// Sonic only
+death_rmsg6a	= "You ran out of sweet passion.";						// Amy only
+death_rmsg6c	= "That's no good!";									// Classic Sonic only
+death_rmsg6d	= "Nice going, Mr. Ultimate Life Form.";				// Shadow only
+death_rmsg7		= "Easy mode is now selectable.";
+
+// Contextual death mesasges
+death_drown		= "If you're stuck underwater,\n rapidly press jump to swim up.";
+death_assm		= "Stop trying to rocket jump!";						// If holding Dual Assimilator
+death_fast		= "You barely even started and you're already dead.";	// If dead within the first two seconds
+death_easy		= "Did you just die on easy mode?";						// On first two skill levels
+death_hard		= "Maybe don't play on the hardest difficulty.";		// On second-to-last skill level
+death_ohno		= "I told you it wasn't remotely fair.";				// On 'Oh No'
+
+title_msg1		= "\c[LightBlue]'Nothing starts until you take action.\nIf you have time to worry, then run!'\n\c[White]— Sonic the Hedgehog, Sonic '06";
+title_msg2		= "If you're having trouble with enemies,\nlearn to get better at evasion before going in for attacks.";
+title_msg3		= "Every character has a unique \c[LightBlue]Offhand Attack \c[White]and \c[LightBlue]Offhand Ability\c[White].";
+title_msg4		= "Make sure you bind all your keys in \c[LightBlue]Options > Controls\c[White].";
+title_msg5		= "Welcome to Sonic: Lock & Load!\nAfter 3 years in development, hopefully it was worth the wait.";
+title_msg6		= "Make good use of the \c[Gold]Last Used Weapon\c[White] key.\nQuickswapping between weapons is the fastest way\nto attack, and bypasses weapon reloading animations.";
+title_msg7		= "Yes, it's a Sonic first person shooter.\nNo, you haven't gone insane.";
+title_msg8		= "\c[Green]Did you know?\n\c[White]The whole reason this game exists\nis because of a Peter Knetter video.";
+title_msg9		= "The \c[LightBlue]Cyber Space Arena \c[White]is an endless arena mode.\nAccess it from Station Square after picking up weapons\nin the levels, or even just jump in with your default weapons!";
+title_msg10		= "Check out the \c[LightBlue]Gameplay Modifiers\c[White] in the Options menu!";
+title_msg11		= "\c[Sonic]Sonic the Hedgehog \c[White]excels at fast traversal and combat.\n\c[Amy]Amy Rose \c[White]has more grounded and defensive options.\n\c[Classic]Classic Sonic \c[White]is more platforming-focused.\n\c[Shadow]Shadow the Hedgehog \c[White]focuses on being more tactical.";
+title_msg12		= "Raise your hand if you played\nS:L&L at \c[Orange]SAGE 2022\c[White] or \c[Red]Christmas SAGE 2023\c[White]!";
+title_msg13		= "I'm running out of ideas for title screen tips.";
+title_msg14		= "Made with \c[Red]♥ \c[White]by Arsalan 'Velocity' Kazmi!\n\c[Green]<https://that1m8head.github.io>";
+title_msg15		= "Thanks to the ZDoom community and\nSonic fan game community for the assistance\nand feedback over the years!";
+title_msg16		= "Don't stand still in combat.\nIt'll lead to a quick failure.";
+title_msg17		= "While you're in the heat of the moment,\ntry not to get overconfident. It won't end well.";
+title_msg18		= "Devil May Blast. Devil May Robo Blast?\nEh, I'll come up with a better metaphor later.";
+title_msg19		= "I never thought I'd get this far.";
+title_msg20		= "If you see this, say 'flanksteak'.";
+
+level_instruct  = "This teleporter leads to";
+// level name is expected to go after level_instruct
+
+// The "funny" descriptions have a 1-in-5 chance of being used
+// instead of their more "normal" variants
+
+// Cyber Space Arena
+level0_normal   = "Fight endless waves of enemies in a grid-based zone.";
+level0_funny    = "Fight enemies until you get bored and leave.";
+
+// Sunset Gardens
+level1_normal   = "An island off the outskirts of South Island.";
+level1_funny    = "Green Hill's looking a lot more like Brown Hill!";
+
+// Marble Madness
+level2_normal   = "An oddly familiar labyrinth of pain.";
+level2_funny    = "A house. Made of marble.";
+
+// Oceanic Fortress
+level3_normal   = "A disused Eggman base, overrun with monsters.";
+level3_funny    = "A big wet.";
+
+// Hire This Zone
+levelh_funny1   = "There's a man who has artistic vision...";
+levelh_funny2   = "This man's still a master of the medium!";
+
+// Entryway (DOOM II levels)
+leveld_normal   = "Play the standard DOOM II levels as per usual.";
+leveld_funny    = "What, do you not like the Sonic levels?";
+
+level_locked_1  = "This teleporter to";
+// level name is expected to go after level_locked_1
+level_locked_2  = "is locked.";
+level_locked_3  = "Complete";
+// previous level name is expected to go after level_locked_3
+level_locked_4  = "first.";
 
 MENU_NEWGAME 	= "New Game";
 MENU_ABOUT 		= "About";

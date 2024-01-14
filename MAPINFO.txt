@@ -1,26 +1,35 @@
 gameinfo
 {
-   PlayerClasses = "SonicPlayer", "AmyPlayer", "ClassicSonicPlayer", "ShadowPlayer"
-   QuitMessages = "$QUITMSG1", "$QUITMSG2", "$QUITMSG3", "$QUITMSG4", "$QUITMSG5", "$QUITMSG6", "$QUITMSG7", "$QUITMSG8"
-   InfoPage = "ABOUTLL"
-   TitlePage = "TITLEPIC"
-   CreditPage = "TITLEPIC"
-   TitleMusic = "S_TITLE"
-   IntermissionMusic = "S_INTER"
-   FinaleMusic = "S_RECAP"
-   menufontcolor_title = "ActiveOption"
-   menufontcolor_label = "MenuInactive"
-   menufontcolor_value = "White"
-   menufontcolor_action = "White"
-   menufontcolor_header = "MenuInactive"
-   menufontcolor_highlight = "MenuInactive"
-   menufontcolor_selection = "MenuActive"
-   DimColor = "00 00 00"
-   DimAmount = 0.30
-   EventHandlers = "RemoveCyberSpaceArenaCorpses", "GiveEnergyOnDamage", "EnemiesBleedRings", "StyleSystem", "SpongyEnemies", "DeathCounter"
+	PlayerClasses = "SonicPlayer", "AmyPlayer", "ClassicSonicPlayer", "ShadowPlayer"
+	QuitMessages = "$QUITMSG1", "$QUITMSG2", "$QUITMSG3", "$QUITMSG4", "$QUITMSG5", "$QUITMSG6", "$QUITMSG7", "$QUITMSG8"
+	InfoPage = "ABOUTLL"
+	TitlePage = "TITLEPIC"
+	CreditPage = "TITLEPIC"
+	TitleMusic = "S_TITLE"
+	IntermissionMusic = "S_INTER"
+	FinaleMusic = "S_RECAP"
+	menufontcolor_title = "ActiveOption"
+	menufontcolor_label = "MenuInactive"
+	menufontcolor_value = "White"
+	menufontcolor_action = "White"
+	menufontcolor_header = "MenuInactive"
+	menufontcolor_highlight = "MenuInactive"
+	menufontcolor_selection = "MenuActive"
+	DimColor = "00 00 00"
+	DimAmount = 0.30
+	EventHandlers = "LastWeaponHandler", "RemoveCyberSpaceArenaCorpses", "GiveEnergyOnDamage", "EnemiesBleedRings", "StyleSystem", "SpongyEnemies", "DeathCounter", "CheckpointRemovalHandler"
+	StatusBarClass = "SLL_StatusBar"
+	Intro {
+		Video = "Graphics/Intro.ivf"
+		Sound = "Graphics/Intro.ogg"
+	}
 }
 
 DamageType SonicKick
+{
+	Factor = 1
+}
+DamageType AmyKick
 {
 	Factor = 1
 }
@@ -49,6 +58,10 @@ DamageType RocketStream
 	Factor = 1
 }
 DamageType SonicPunch
+{
+	Factor = 1
+}
+DamageType SpinDash
 {
 	Factor = 1
 }
@@ -124,9 +137,9 @@ map SDLvl02 "Marble Madness"
 map SDLvl03 "Oceanic Fortress"
 {
 	music = S_LVL03
-	sky1 = "SUNSTSKY"
+	sky1 = "GHZSKY"
 	next = "SDLobby"
-	partime = 360
+	partime = 480
 	levelnum = 3
 	nointermission
 }
@@ -147,7 +160,7 @@ map TheBoss "Dis Is It"
 map SDHire "Hire This Zone"
 {
 	music = S_FRONT
-	sky1 = "GHZSKY"
+	sky1 = "REALSKY"
 	next = "SDLobby"
 	author = "That1M8Head"
 	partime = 220
@@ -163,10 +176,13 @@ map SDCybrSp "Cyber Space Arena"
 	levelnum = 69
 	sky1 = "cybrback"
 	useplayerstartz
-	resethealth
-	resetinventory
 	nointermission
 	noinfighting
+}
+
+map SDFail "Game Over"
+{
+	levelnum = 999
 }
 
 clearskills
@@ -178,7 +194,8 @@ skill easy
 	PlayerClassName = "$classic", "$skill1_classic"
 	PlayerClassName = "$shadow", "$skill1_shadow"
 	name = "$skill1"
-	spawnfilter = 3
+	spawnfilter = 4
+    damagefactor = 0.5
 	totalinfighting
 	mustconfirm = "$skill_text1"
 }
@@ -329,6 +346,7 @@ DoomEdNums
 	4158  = "AmySwitch"
 	4159  = "OmniSwitch"
 	4160  = "ClassicSonicSwitch"
+    4161  = "SecretSwitch"
 
 	19924 = "FastSpiderdemon"
 	19926 = "MechZombie"

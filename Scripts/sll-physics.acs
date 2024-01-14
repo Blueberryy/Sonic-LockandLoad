@@ -14,12 +14,17 @@ script "SetFriction" ENTER
 		int buttons = GetPlayerInput(-1, MODINPUT_BUTTONS);
 		bool isMoving = forward > 0 || sidem > 0 || forward < 0 || sidem < 0;
 		if (GetCvar("IsSpinDashing")) {
-			SetActorProperty(0, APROP_Friction, 1.5);
+			if (PlayerClass(PlayerNumber()) == ClassicSonic) {
+				SetActorProperty(0, APROP_Friction, 1.5);
+			}
+			else {
+				SetCvar("IsSpinDashing", false);
+			}
 		}
 		else if (GetCvar("IsCrouching") && speed >= 1.0) {
-			SetActorProperty(0, APROP_Friction, 1.088);
+			SetActorProperty(0, APROP_Friction, 1.15);
 			if (speed < 100.0) {
-				ScaleVelocity(0, 1.0 + (oldz - GetActorZ(0)) / 98);
+				ScaleVelocity(0, 1.0 + (oldz - GetActorZ(0)) / 120);
 			}
 		}
 		else if (GetCvar("ReservedMode")) {
@@ -60,7 +65,7 @@ script "JumpHeight" ENTER
 script "WallJump" (int height, int distance, int angle)
 { // Not technically a "physics" thing but idk where else to put it
 	Delay(1);
-	PlaySound(0, "sonic/walljump", CHAN_BODY);
+	PlaySound(0, "*walljump", CHAN_BODY);
 	int jangle;
 	/* I don't care that this sucks.
 	   If you have a better solution for

@@ -6,6 +6,8 @@ user int AmyZoomFactor				= 4;
 user int HomingReticle				= 2;
 user int InvincMusic 				= 1;
 user int SuperMusic 				= 1;
+user int ArenaMusic 				= 0;
+user string ArenaCustomMusic 		= "";
 
 user bool WallCrash 				= true;
 user bool Subtitles 				= true;
@@ -18,17 +20,23 @@ user bool HireThisMan				= true;
 user bool ControlHints				= false;
 user bool Tutorials					= true;
 user bool EnergyBlades				= true;
+user bool ShowScore					= true;
+user bool DarkArena					= false;
+user bool CheckpointsEnabled		= true;
 
 user bool GiveEnergyOnDamage		= false;
 user bool EnemiesBleedRings			= false;
-user bool StyleSystem				= false;
+user bool StyleSystem				= true;
+user bool StyleCallouts				= true;
+user bool StylePoints				= true;
+user bool StyleBonuses  			= true;
 user bool SpongyEnemies				= false;
 user int  Sponginess				= 2;
 user bool OneHitMode				= false;
 user bool CountDeaths				= false;
+user bool PermadeathMode			= false;
 
 /* Temporary CVARs */
-user noarchive string LastWeapon		= "";
 user noarchive bool	  Sliding			= false;
 user noarchive bool   SoulSurgeReady	= false;
 user noarchive bool	  IsSpinDashing		= false;
@@ -44,3 +52,6 @@ user noarchive int 	  EclipseLimiter	= 0;
 user noarchive int	  StyleRank			= 0;
 user noarchive int	  StyleScore		= 0;
 user noarchive int	  DeathCounter		= 0;
+
+/* tp_tips */
+server bool tp_show_notes = true;

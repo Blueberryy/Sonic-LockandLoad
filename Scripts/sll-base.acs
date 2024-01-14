@@ -1,3 +1,22 @@
+/*
+Copyright (c) 2020-2023 Arsalan "Velocity" Kazmi <sonicspeed848@gmail.com>
+
+This file is part of Sonic: Lock & Load.
+
+Sonic: Lock & Load is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your option) any
+later version.
+
+Sonic: Lock & Load is distributed in the hope that it will be useful (and fun),
+but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+more details.
+
+You should have received a copy of the GNU General Public License along with
+Sonic: Lock & Load. If not, see <https://www.gnu.org/licenses/>.
+*/
+
 #library "sonic-lockandload"
 #include "zcommon.acs"
 
@@ -6,17 +25,6 @@ Welcome to Sonic: Lock & Load's base ACS file!
 
 This ACS file includes certain definitions for S:L&L stuff,
 as well as includes to the other ACS files.
-
-This was done like this so that I can have the ACS stuff
-be a little more modular.
-
-There's still a lot of work to be done, as there needs to be
-some refactoring in order to make it all properly modular,
-but this is certainly a start.
-
-This of course doesn't make up all of S:L&L's codebase.
-The majority of the game is programmed in ZScript, which also
-needs to be modularised and refactored.
 */
 
 // Character definitions
@@ -32,6 +40,8 @@ needs to be modularised and refactored.
 #define A 4
 #define S 5
 #define SS 6
+#define SSS 7
+#define U 8
 
 // ACS file inclusions
 #include "sll-audio.acs"     // Sounds and music

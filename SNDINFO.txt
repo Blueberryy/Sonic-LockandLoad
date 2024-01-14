@@ -16,12 +16,14 @@ sglobal/booster				booster
 sglobal/drowning			drowning
 
 // Style system callouts
-sstyle/good					GOOD
-sstyle/great				GREAT
-sstyle/awesome				AWESOME
-sstyle/outstanding			OUTSTAND
-sstyle/amazing				AMAZING
-sstyle/supersonic			SUPSONIC
+sstyle/dontgiveup			DONTGIVE // D
+sstyle/good					GOOD	 // C
+sstyle/great				GREAT	 // B
+sstyle/awesome				AWESOME	 // A
+sstyle/outstanding			OUTSTAND // S
+sstyle/amazing				AMAZING	 // SS
+sstyle/supersonic			SUPSONIC // SSS
+sstyle/unlimited   			UNLIMTED // U
 
 // Pickups
 
@@ -258,7 +260,7 @@ $random classic/taunt 		{ classic/taunt1 classic/taunt2 classic/taunt3 classic/t
 
 $random sglobal/nextlevel { sonic/nextlevel amy/nextlevel classic/nextlevel shadow/nextlevel }
 $alias intermission/paststats sglobal/nextlevel
-	
+
 /*
 		sonic/startup		s_strtup
 $alias  misc/startupdone	sonic/startup
@@ -271,8 +273,8 @@ $playersound sonic 	 male 		*death                  sonic/death
 $playeralias sonic 	 male 		*usefail                sonic/cantuse
 $playersound sonic 	 male 		*jump                   S_JUMP
 $playersound sonic 	 male 		*doublejump				S_DBJUMP
+$playersound sonic 	 male 		*walljump				S_WAJUMP
 								sonic/doublejump		*doublejump
-								sonic/walljump			S_WAJUMP
 $playersound sonic 	 male 		*grunt                  S_LAND
 $playersound sonic 	 male 		*land                   S_LAND
 $playersound sonic 	 male 		*fall	                sonifall
@@ -284,6 +286,7 @@ $playersound amy	 female 	*death                  adeath
 $playeralias amy	 female 	*usefail                amy/cantuse
 $playersound amy	 female 	*jump                   A_JUMP
 $playersound amy 	 female		*doublejump				A_DBJUMP
+$playersound amy 	 female		*walljump               A_JUMP
 								amy/doublejump			A_DBJUMP
 $playersound amy	 female 	*grunt                  A_LAND
 $playersound amy	 female 	*land                   A_LAND
@@ -296,6 +299,7 @@ $playersound classic male 		*death                	sonicdoom/cdeath
 $playeralias classic male 		*usefail              	classic/cantuse
 $playersound classic male 		*jump                 	cjump
 $playersound classic male 		*doublejump				cjump
+$playersound classic male 		*walljump				cjump
 $playersound classic male 		*grunt                	C_LAND
 $playersound classic male 		*land                 	C_LAND
 $playersound classic male 		*fall	                bfall
@@ -307,6 +311,7 @@ $playersound shadow  male 		*death                 	nooooooo
 $playeralias shadow  male 		*usefail               	shadow/cantuse
 $playersound shadow  male 		*jump                  	D_JUMP
 $playersound shadow  male 		*doublejump				A_DBJUMP
+$playersound shadow  male 		*walljump               D_JUMP
 $playersound shadow  male 		*grunt                 	S_LAND
 $playersound shadow  male 		*land                  	S_LAND
 $playersound shadow	 male 		*fall	                sonifall
@@ -328,3 +333,7 @@ brain/sight						RIAHESON
 // Doox
 
 doox/nyeh						nyeh
+
+// Checkpoints.wad
+
+SP_SAVED						checkpnt

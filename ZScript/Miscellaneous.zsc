@@ -5,6 +5,7 @@ class SonicSwitch : LLSwitch // 4156
 		//$Name Sonic Switch
 		//$Category Lock & Load Objects
 		DamageFactor "SonicKick", 1;
+		DamageFactor "Caliburn", 1;
 	}
 	States
 	{
@@ -20,6 +21,7 @@ class AmySwitch : LLSwitch
 	{
 		//$Name Amy Switch
 		//$Category Lock & Load Objects
+		DamageFactor "AmyKick", 1;
 		DamageFactor "Piko", 1;
 	}
 	States
@@ -37,6 +39,7 @@ class ClassicSonicSwitch : LLSwitch // 4156
 		//$Name Classic Sonic Switch
 		//$Category Lock & Load Objects
 		DamageFactor "SonicPunch", 1;
+		DamageFactor "SpinDash", 1;
 	}
 	States
 	{
@@ -70,8 +73,11 @@ class OmniSwitch : LLSwitch
 		//$Name Omni Switch
 		//$Category Lock & Load Objects
 		DamageFactor "SonicKick", 1;
+		DamageFactor "Caliburn", 1;
+		DamageFactor "AmyKick", 1;
 		DamageFactor "Piko", 1;
 		DamageFactor "SonicPunch", 1;
+		DamageFactor "SpinDash", 1;
 		DamageFactor "Spear", 1;
 		DamageFactor "ShadowMelee", 1;
 	}
@@ -81,6 +87,15 @@ class OmniSwitch : LLSwitch
 			ALLS A -1;
 			Stop;
 	}
+}
+
+class SecretSwitch : OmniSwitch
+{
+    Default
+    {
+        //$Name Secret Switch
+		//$Category Lock & Load Objects
+    }
 }
 
 class Doox : SwitchingDecoration
@@ -120,7 +135,10 @@ class Doox : SwitchingDecoration
 			}
 			Loop;
 		Active:
-			DOOX A 1 A_StartSound("doox/nyeh");
+			DOOX A 1 {
+				A_StartSound("doox/nyeh");
+				ACS_NamedExecute("Subtitles", 0, 23);
+			}
 			TNT1 A 0 Thing_Deactivate(0);
 			Goto Spawn;
 		Death:
